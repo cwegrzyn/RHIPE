@@ -10,7 +10,7 @@
 
 
 \title{rhipe Documentation}
-\date{September 01, 2009}
+\date{September 08, 2009}
 \release{0.5}
 \author{Saptarshi Guha}
 \newcommand{\sphinxlogo}{}
@@ -96,51 +96,55 @@ Mainpage
 
 
 \section{Requirements}
+\begin{enumerate}
+\item {} 
+\emph{Protobuffers}
 
-RHIPE requires Java (JDK 1.6, checked only with Sun's Java), and R.
-Currently, RHIPE only works on Linux, though one day it might also
-work on Windows too.
+RHIPE uses Google's Protobuf library for serialization. This(the C/C++
+libraries) must be installed on \emph{all} machines (master/workers). Get
+Protobuffers from \href{http://code.google.com/p/protobuf/}{http://code.google.com/p/protobuf/}. RHIPE already has the
+protobuf jar file inside it.
+\begin{description}
+\item[Non Standard Locations]
+If installing protobuf to a non standard location, update the
+PKG\_CONFIG\_PATH variable, e.g
+
+\end{description}
+
+\end{enumerate}
+\begin{quote}
+
+\begin{Verbatim}[commandchars=@\[\]]
+export PKG@_CONFIG@_PATH@PYGbe[=]@$PKG@_CONFIG@_PATH:@$CUSTROOT@PYGbe[/]lib@PYGbe[/]pkgconfig@PYGbe[/]
+\end{Verbatim}
+\end{quote}
+\begin{enumerate}
+\item {} 
+\emph{R} , tested on 2.8
+
+\item {} 
+\emph{rJava} The R package needs rJava.
+
+\end{enumerate}
+
+Tested on RHEL Linux, though \emph{may} work on Windows
 
 
 \section{Installation}
-\begin{enumerate}
-\item {} 
-Install Java and R
 
-\item {} 
-Install rJava, Simon Urbanek's R package to allow R to call Java libraries.
+On every machine
+\begin{description}
+\item[::]
+tar zxvf rhipe.VERSION.tar.gz
+R CMD INSTALL rhipe.VERSION
 
-\item {} 
-Download the current version of RHIPE, untar and run
+\end{description}
 
-\end{enumerate}
-
-\begin{Verbatim}[commandchars=@\[\]]
-make R
-\end{Verbatim}
-
-This will build and install the R RHIPE package. There is a JAR file
-present in the \code{lib/} folder, but should you wish to build the RHIPE
-JAR file, set the environment variables \code{HADOOP} should point to the
-Hadoop distribution folder. To build the JAR file, run
+To load it
 
 \begin{Verbatim}[commandchars=@\[\]]
-make java
+library(Rhipe)
 \end{Verbatim}
-
-To build the docs, install \href{http://sphinx.pocoo.org/}{sphynx}
-\begin{enumerate}
-\item {} 
-Given that Hadoop is running, typing
-
-\end{enumerate}
-
-\begin{Verbatim}[commandchars=@\[\]]
-@PYGZlb[]bash@PYGZrb[] R
-@PYGbe[@textgreater[]]@PYGbe[@textgreater[]] library(rhipe)
-\end{Verbatim}
-
-should get you started.
 
 \resetcurrentobjects
 \hypertarget{--doc-rhlapply}{}
@@ -152,10 +156,8 @@ should get you started.
 
 \code{rhapply} applies a user defined function to the elements of a given
 R list or the function can be run over the set of numbers from 1 to
-n. In the former case the list is written to a sequence file, the
-default is to write \emph{one sequence file} per item, which can be grossly
-inefficient. This can be controlled by setting \code{mapred.max.tasks} in
-the \code{hadoop.options} paramater of \code{rhlapply}.
+n. In the former case the list is written to a sequence file,whose length is the
+default setting of \code{rhwrite}.
 
 Running a hundreds of thousadands of seperate trials
 can be terribly inefficient, instead consider grouping them, i.e set
@@ -172,71 +174,55 @@ of the input list (if given).
 \section{Function Usage}
 
 \begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=1,stepnumber=1]
-rhlapply @PYGbe[@textless[]-] @PYGap[function]( list.object,
-                     func,
-                     configure@PYGbe[=]expression(),
-                     output.folder@PYGbe[=]'',
-                     shared.files@PYGbe[=]c(),
-                     hadoop.mapreduce@PYGbe[=]list(),
-                     verbose@PYGbe[=]T,
-                     takeAll@PYGbe[=]T)
+rhlapply @PYGbe[@textless[]-] @PYGap[function]( ll@PYGbe[=]@PYGaD[NULL],
+                     fun,
+                     ifolder@PYGbe[=]@PYGaB["]@PYGaB["],
+                     ofolder@PYGbe[=]@PYGaB["]@PYGaB["],
+                     readIn@PYGbe[=]T,
+                     inout@PYGbe[=]c('lapply','sequence')
+                     mapred@PYGbe[=]list()
+                     setup@PYGbe[=]@PYGaD[NULL]
+                     )
 \end{Verbatim}
 
-Description of the options follows.
+Description follows
 \begin{description}
-\item[\code{list.object}]
-Either an R list or a scalar number, N. In the former case, the
-user function gets the value. In the latter, the function gets
-the iteration number (from 1 to N)
+\item[\code{ll}]
+The list object, optional. Applies \code{fun} to \code{ll{[}{[}i{]}{]}} .
+If instead \code{ll} is a numeric, applies \code{fun} to each element of
+\code{seq(1,ll)}. If not given, must provide a value for \code{ifolder}
 
-\item[\code{func}]
-A user supplied R function, which can return any R object.
+\item[\code{fun}]
+A function that takes only one argument.
 
-\item[\code{configure}]
-An expression which can be used to setup the environment. Run
-once for every \emph{task}. So if the user has 100K tasks, it is run
-100K times.
+\item[\code{ifolder}]
+If \code{ll} is null, provide a source here. Also change the value of
+\code{inout{[}1{]}} to either \code{text} or \code{sequence}.
 
-\item[\code{output.folder}]
-Save the results in an output folder, not required, but this
-output folder can be used \code{rhmr} or to \code{rhlapply}
+\item[\code{readIn}]
+The results are stored in a temporary sequence file on the DFS which is
+deleted. Should the results be returned in a list? Default is TRUE. For
+large number of output key-values (e.g 1MM) set this to FALSE, using the
+default options to \code{rhread} is extremely slow.
 
-\item[\code{shared.files}]
-A character vector of files located on the HDFS. The files are
-copied to a working folder on the cluster machines, thus
-speeding up reads. To load the filename, use the trailing part
-of the filename, e.g
+\item[\code{ofolder}]
+If given the results are written to this folder and not deleted. If not,
+they are written to temporary folder, read back in (assuming \code{readIn}
+is TRUE) and deleted.
+
+\item[\code{mapred}]
+Options passed onto \code{rhmr}
+
+\item[\code{setup}]
+And expression that is called before running \code{func}. Called once per
+JVM.
 
 \end{description}
 
-\begin{Verbatim}[commandchars=@\[\]]
-rhlapply(...,shared.files@PYGbe[=]c('@PYGbe[/]tmp@PYGbe[/]file1.Rdata','@PYGbe[/]user@PYGbe[/]me@PYGbe[/]obj.Rdata'))
-\end{Verbatim}
 
-Then e.g. in R,
+\subsection{RETURN}
 
-\begin{Verbatim}[commandchars=@\[\]]
-configure @PYGbe[@textless[]-] expression({
-        load('obj.Rdata')
-        load('file1.Rdata')
-        })
-\end{Verbatim}
-
-Note, the files are copied to R's working directory.
-\begin{description}
-\item[\code{hadoop.mapreduce}]
-A list, keys are hadoop options. Use this to set all of the
-Hadoop options.
-
-\item[\code{verbose}]
-If True, the progress of the job appears in the R terminal,
-else a web url is provided for the user to inspect. Also in
-the latter, control returns immediately to the user
-
-\item[\code{takeAll}]
-Get back all the results from the temporary output file.
-
-\end{description}
+An object that is passed onto \code{rhex}.
 
 \resetcurrentobjects
 \hypertarget{--doc-rhmr}{}
@@ -260,221 +246,126 @@ can be any R data structure.
 \section{Function}
 
 \begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=1,stepnumber=1]
-rhmr @PYGbe[@textless[]-] @PYGap[function](map,reduce,input.folder,configure@PYGbe[=]list(map@PYGbe[=]expression(),reduce@PYGbe[=]expression()),
-        close@PYGbe[=]list(map@PYGbe[=]expression(),reduce@PYGbe[=]expression())
-         output.folder@PYGbe[=]'',combiner@PYGbe[=]F,step@PYGbe[=]F,
-         shared.files@PYGbe[=]c(),inputformat@PYGbe[=]@PYGaB["]@PYGaB[TextInputFormat"],
-         outputformat@PYGbe[=]@PYGaB["]@PYGaB[TextOutputFormat"],
-         hadoop.mapreduce@PYGbe[=]list(),verbose@PYGbe[=]T,libjars@PYGbe[=]c())
+rhmr @PYGbe[@textless[]-] @PYGap[function](map,reduce@PYGbe[=]@PYGaD[NULL],
+         combiner@PYGbe[=]F, @PYGaf[@#CANNOT BE CHANGED]
+         setup@PYGbe[=]@PYGaD[NULL],
+         cleanup@PYGbe[=]@PYGaD[NULL],
+         ofolder@PYGbe[=]'',
+         ifolder@PYGbe[=]'',
+         inout@PYGbe[=]c(@PYGaB["]@PYGaB[text"],@PYGaB["]@PYGaB[text"]),
+         mapred@PYGbe[=]@PYGaD[NULL],
+         shared@PYGbe[=]c(),
+         jarfiles@PYGbe[=]c(),
+         copyFiles@PYGbe[=]F,
+         opts@PYGbe[=]rhoptions())
 \end{Verbatim}
 \begin{description}
-\item[input.folder]
-A folder on the DFS containing the files to process. Can be a vector.
+\item[\code{map}]
+A map expression, not a function. The map expression can expect a list of keys in \code{map.keys} and list of values in \code{map.values}.
 
-\item[output.folder]
-A folder on the DFS where output will go to.
-
-\item[inputformat]
-Either of \code{TextInputFormat} or \code{SequenceFileInputFormat}. Use the former
-for text files and the latter for sequence files created from within R or as
-outputs from RHIPE(e.g \code{rhlapply} or \code{rhmr}).
-
-\end{description}
-
-\begin{notice}{note}{Note:}
-one can't use any sequence file, they must have been created via a RHIPE function. Custom Input formats are also possible. Download the source and look at \code{code/java/RXTextInputFormat.java}
-\end{notice}
+\item[\code{reduce}]
+Can be null if only a map job. If not,reduce should be an expression with three attributes
 \begin{description}
-\item[outputformat]
-Either of \code{TextOutputFormat} or \code{SequenceFileOutputFormat}. In case of the former, the return value from the mapper or reducer is converted to character and written to disk. The following code is used to convert to character.
+\item[\code{pre}]
+Called for a new key, but no values have been read. The key is present in \code{reduce.key}.
+
+\item[\code{reduce}]
+Called for reducing the incoming values. The values are in a list called \code{reduce.values}
+
+\item[\code{post}]
+Called when all the values have been sent.
 
 \end{description}
 
-\begin{Verbatim}[commandchars=@\[\]]
-paste(key,sep@PYGbe[=]'',collapse@PYGbe[=]field@_separator)
-\end{Verbatim}
+\item[\code{combiner}]
+Uses a combiner if TRUE. If so, then \code{reduce.values} present in the \code{reduce\$reduce} expression will be a \emph{subset} of values.
 
-Custom output formats are also possible. Download the source and look at \code{code/java/RXTextOutputFormat.java}
+\item[\code{setup}]
+An expression that can be called to setup the environment. Called once for every task.
+It can be a list of two attributes \code{map} and \code{reduce} which are expressions to be run in the map and reduce stage. If a single expression then that is run for both map and reduce
 
-If custom formats implement their own writables, it must subclass RXWritable or use one of the writables presents in RHIPE
+\item[\code{cleanup}]
+Same as for \code{setup}, run when all work for a task is complete.
+
+\item[\code{ifolder}]
+A folder or file to be processed. Can be a vector of strings.
+
+\item[\code{ofolder}]
+The folder to store output in. Side effects will be copied here.
+
+\item[\code{inout{}`}]\begin{description}
+\item[A vector of input type and output type.]\begin{description}
+\item[\code{text}]
+indicates Text Format. Use \code{mapred.field.separator} to seperate the elements of a vector.
+
+\end{description}
+
+\item[\code{sequence}]
+is a sequence format. Outputs in this form /can/ be used as an input.
+
+\item[\code{binary}]
+is a simple binary format consisting of key-length, key data, value-length, value data where the lengths are integers in network order. Though \emph{much} faster than sequence in terms of reading in data, it \emph{cannot} be used an input to a map reduce operation.
+
+\end{description}
+
+\item[\code{shared}]
+A vector of files on the HDFS that will be copied to the working directory of the R program. These files can then be loaded as easily as \code{load(filename)} (removed leading path)
+
+\item[\code{jarfiles}]
+Copy jar files if required. Experimental, probably doesn't work.
+
+\item[\code{copyFiles}]
+For side effects to be copied back to the DFS, set this to TRUE, otherwise they wont be copied.
+
+\item[\code{mapred}]
+Set Hadoop options here and RHIPE options.
+
+\end{description}
+
+
+\section{RHIPE Options}
 \begin{description}
-\item[shared.files]
-same as in \code{rhlapply}, see that for documentation.
+\item[\textbf{rhipe\_stream\_buffer}]
+The size of the STDIN buffer used to write data to the R process(in bytes)
+\emph{default:} 10*1024 bytes
 
-\item[verbose]
-If T, the job progress is displayed. If false, then the job URL is displayed.
+\item[\textbf{mapred.textoutputformat.separator}]
+The text that seperates the key from value when \code{inout{[}2{]}} equals text.
+\emph{default:} Tab
 
-\end{description}
+\item[\textbf{mapred.field.separator}]
+The text that seperates fields when \code{inout{[}2{]}} equals text.
+\emph{default:} Space
 
-At any time in the configure, close, map or reduce function/expression, the variable \code{mapred.task.is.map} will be equal to TRUE if it is map task,FALSE otherwise (both strings) Also, \code{mapred.iswhat} is ``mapper'', ``reducer'', ``combiner'' in their respective environments.
-\begin{description}
-\item[configure]
-A list with either one element (an expression) or two attributes ``map'' and ``reduce'' both of which must be expressions. These expressions are called in their respective environments, i.e the map expression is called during the map configure and similarly for the reduce expression. The reduce expression is called for the combiner configure method.
+\item[\textbf{rhipe\_reduce\_buff\_size}]
+The maximum length of \code{reduce.values}
+\emph{default:} 10,000
 
-If only one list element, the expression is used for both the map and reduce
-
-\item[close]
-Same as configure .
-
-\item[map]
-a function that takes two values key and value. Should return a list of
-lists. Each list entry must contain two elements, the first one is the key
-and second the value (they do not have to be named), e.g.
-
-\end{description}
-
-\begin{Verbatim}[commandchars=@\[\]]
-ret @PYGbe[@textless[]-] list()
-ret@PYGZlb[]@PYGZlb[]@PYGaS[1]@PYGZrb[]@PYGZrb[] @PYGbe[@textless[]-]  list(key@PYGbe[=]c(@PYGaS[1],@PYGaS[2]), value@PYGbe[=]c('x','b'))
-@PYGap[return](ret)
-\end{Verbatim}
-
-If any of key/value are missing the output is not collected, e.g. return NULL
-to skip this record. If the input format is a \code{TextInputFormat}, the input
-value is the entire line and the input key is probably useless to the user( it is a number indicating bytes into the file). If the input format is \code{SequenceFileInputFormat}, the key and value are taken from the sequence file.
-\begin{description}
-\item[reduce]
-Not needed if \code{mapred.reduce.tasks} is 0. Takes a key and a list of
-values( all values emitted from the maps that share the same map output key
-). If \code{step} is True, then not a list. Must return a list of lists each
-element of which must have two elements key and value. This collects all the
-values and sends them to function. If NULL is returned nothing is collected
-by the Hadoop collector
-
-\item[step]
-If step is TRUE, then the reduce function is called every batch of values
-(the size of the batch is user configurable) corresponding to a key
-\begin{itemize}
-\item {} 
-The variable \code{red.status} is equal to 1 on the first call.
-
-\item {} 
-\code{red.status} is equal to 0 for every subsequent calls including the last value
-
-\item {} 
-The reducer function is called one last time with \code{red.status} equal to -1. The value is NULL.
-
-Anything returned at any of these stages is written to disk. The
-\code{close} function is called once every value for a given key has been
-processed, but returning anything has no effect. To assign to the
-global environment use the \code{\textless{}\textless{}-} operator. To bail out at any time
-(i.e after the third value you do not want to process anymore) and
-move onto the next key, return a list with the attribute \code{stop} and
-set it to 1.
-
-\end{itemize}
-
-\item[combiner]
-TRUE or FALSE, to use the reducer as a combiner. Using a combiner makes computation more efficient. If combiner is true, the reduce function will be called as a combiner (0 or more times, it may never be called during the combine stage even if combiner is T) .
-
-The value of \code{mapred.task.is.map} is ``true'' or ``false'' FALSE (both strings) if the combiner is being executed as part of the map stage or reduce stage respectively.
-
-Whether knowledge of this is useful or not is something I'm not sure
-of. However, if combiner is TRUE , keep in mind,your reduce function must be
-able to handle inputs sent from the map or inputs sent from the reduce
-function(itself).
-
-\item[libjars]
-If specifying a custom input/output format, the user might need to specify
-jar files here.
-
-\item[hadoop.mapreduce]
-set RHIPE and Hadoop options via this.
+\item[\textbf{rhipe\_map\_buff\_size}]
+The maximum length of \code{map.values} (and \code{map.keys})
+\emph{default:} 10,000
 
 \end{description}
 
 
-\section{\texttt{hadoop.mapreduce} Options}
-
-All the options that can be set for Hadoop can be set via
-\code{hadoop.mapreduce}. Here is a list of some options RHIPE uses
-\begin{description}
-\item[rhipejob.rport]
-The port on which Rserve runs.
-
-\emph{default:} 8888
-
-\item[rhipejob.outfmt.is.text]
-1 if the output format is textual.
-
-\emph{default:} 1
-
-\item[rhipejob.textoutput.fieldsep]
-The output field seperator.
-
-\emph{default:} `'
-
-\item[rhipejob.textinput.comment]
-If the input is textual and a line begins with this, it is skipped.
-
-\emph{default:} `\#'
-
-\item[rhipejob.combinerspill]
-This number of items are collected by the combiner before being sent to Rserve.
-
-\emph{default:} 100,000
-
-\item[rhipejob.tom]
-Number of map key,values collated before being sent to the mapper (on Rserve).
-
-\emph{default:} 200,000
-
-\item[rhipejob.frommap]
-Number of map output key,values to bring from Rserve in one go.
-
-\emph{default:} 200,000
-
-\item[rhipejob.tor.batch]
-Number of reduce values to be sent to Reducer (batching).
-
-\emph{default:} 200,000
-
-\item[rhipejob.copy.to.dfs]
-Copy side effect files from local to DFS?
-
-\emph{default:} 1
-
-\item[rhipejob.inputformat.keyclass]
-Provide the full Java URL to the keyclass e.g \code{org.saptarshiguha.rhipe.hadoop.RXWritableText}, when using a Custom InputFormat implement RXWritable and implement the methods.
-
-\emph{default:} The default is chosen depending on TextInputFormat or SequenceFileInputFormat.
-
-\item[rhipejob.inputformat.valueclass]
-Provide the full Java URL to the valueclass e.g \code{org.saptarshiguha.rhipe.hadoop.RXWritableText} when using a Custom InputFormat implement RXWritable and implement the methods.
-
-\emph{default:}      The default is chosen depending on TextInputFormat or SequenceFileInputFormat.
-
-\item[rhipejob.input.format.class]
-Specify yours here.
-
-\emph{default:}      As above, the default is either \code{org.saptarshiguha.rhipe.hadoop.RXTextInputFormat} or \code{org.apache.hadoop.mapred.SequenceFileInputFormat}
-
-\item[rhipejob.outputformat.keyclass]
-Provide the full Java URL to the value e.g \code{org.saptarshiguha.rhipe.hadoop.RXWritableText} , also the valueclass must implement RXWritable.
-
-\emph{default:} The default is chosen depending on TextInputFormat or SequenceFileInputFormat
-
-\item[rhipejob.outputformat.valueclass]
-Provide the full Java URL to the value e.g \code{org.saptarshiguha.rhipe.hadoop.RXWritableText} , also the valueclass must implement RXWritable.
-
-\emph{default:} The default is chosen depending on TextInputFormat or SequenceFileInputFormat
-
-\item[rhipejob.output.format.class]
-Specify yours here, provide libjars if required.
-
-\emph{default:} As above, the default is either \code{org.saptarshiguha.rhipe.hadoop.RXTextOutputFormat} or \code{org.apache.hadoop.mapred.SequenceFileInputFormat}
-
-\end{description}
+\section{Status, Counters and Writing Output}
 
 
-\section{Custom Formats or Writables}
+\subsection{Status}
 
-You can specify your own Input/Output Formats and Writables. See the source in
-\code{code/java/} for a \code{RXTextInputFormat} which implements
-\code{TextInputFormat}. The reason this was re implemented is because RHIPE
-requires that all Writables (for the Key and Value) must implement RXWritable or
-use one of the Writables in RHIPE e.g RXWritableLong, RXWritableText,
-RXWritableDouble,RXWritableRAW
+To update the status use \code{rhstatus} which takes a single string e.g \code{rhstatus("Nice")}
+This will also indicate progress.
+
+
+\subsection{Counter}
+
+To update the counter C in the group G with a number N, user \code{rhcounter(G,C,N)}
+where C and G are strings and N is a number.
+
+
+\subsection{Output}
+
+To output data use \code{rhcollect(KEY,VALUE)} where KEY and VALUE are R objects that can be serialized by \code{rhsz} (see the misc page). If one needs to send across complex R objects e.g the KEY is a function, do something like \code{rhcollect(serialize(KEY,NULL),VALUE)}
 
 
 \section{Side Effect files}
@@ -493,231 +384,150 @@ This is a list of supporting functions for reading, writing sequence files and
 manipulating files on the Hadoop Distributed File System (HDFS).
 
 
+\section{Serialization}
+
+
+\subsection{rhsz}
+
+\begin{Verbatim}[commandchars=@\[\]]
+rhsz @PYGbe[@textless[]-] @PYGap[function](object)
+\end{Verbatim}
+
+Serializes a given R object. Currently the only objects that can be serialized
+are vectors of Raws,Numerics, Integers, Strings(including NA), Logical(including NA)
+and lists of these and lists of lists of these. Attributes are copied to(e.g
+names attributes). It appears objects like matrices, factors also get serialized
+and unserialized sucessfully.
+
+
+\subsection{rhuz}
+
+\begin{Verbatim}[commandchars=@\[\]]
+rhuz @PYGbe[@textless[]-] @PYGap[function](object)
+\end{Verbatim}
+
+Unserializes a raw object returned from \code{rhsz}
+
+
 \section{HDFS Related}
 
 
-\subsection{rhget}
+\subsection{rhsave}
 
 \begin{Verbatim}[commandchars=@\[\]]
-rhget@PYGbe[@textless[]-] @PYGap[function](from,to,...)
+rhsave @PYGbe[@textless[]-] @PYGap[function](..., file)
 \end{Verbatim}
 
-Copies \code{from} from the DFS to \code{to} on the local filesystem. This uses the
-system command and extra parameters are sent to the \code{system} command.
+Saves the objects in \code{...} to \code{file} on the HDFS. All other options are
+passed onto the R function \code{save}
+
+
+\subsection{rhsave.image}
+
+\begin{Verbatim}[commandchars=@\[\]]
+rhsave.image @PYGbe[@textless[]-] @PYGap[function](..., file)
+\end{Verbatim}
+
+Same as R's \code{save.image}, except that the file goes to the HDFS.
 
 
 \subsection{rhput}
 
 \begin{Verbatim}[commandchars=@\[\]]
-rhput@PYGbe[@textless[]-] @PYGap[function](from,to,...)
+rhput @PYGbe[@textless[]-] @PYGap[function](src,dest,deleteDest@PYGbe[=]@PYGaD[TRUE])
 \end{Verbatim}
 
-The reverse of \code{rhget}.
+Copies the file in \code{src} to the \code{dest} on the HDFS, deleting destination if
+\code{deleteDest} is TRUE.
 
 
-\subsection{rhrm}
+\subsection{rhget}
 
 \begin{Verbatim}[commandchars=@\[\]]
-rhrm @PYGbe[@textless[]-] @PYGap[function](w,gp@PYGbe[=]@PYGaD[NA],...)
+rhget @PYGbe[@textless[]-] @PYGap[function](src,dest)
 \end{Verbatim}
 
-Deletes the file \code{w} from the HDFS. Regular expressions can be given in
-\code{gp}, if so \code{w} should be a folder. For example:
+Copies \code{src{}`{}`(on the HDFS) to {}`{}`dest} on the local. If \code{src} is a directory and \code{dest} exists,
+\code{src} is copied inside \code{dest{}`{}`(i.e a folder inside {}`{}`dest}).If not(i.e
+\code{dest} does not exist), \code{src}`s contents is copied to a new folder called
+\code{dest}.  If \code{src} is a file, and \code{dest} is a directory \code{src} is copied
+inside \code{dest} . If \code{dest} does not exist, it is copied to that file
 
-\begin{Verbatim}[commandchars=@\[\]]
-rhrm(@PYGaB["]@PYGaB[/tmp"],gp@PYGbe[=]@PYGaB["]@PYGaB[partfile@$"])
-\end{Verbatim}
+Wildcards allowed
 
-deletes all files in \code{/tmp/} that end in \emph{partfile}
+OVERWRITES!
 
 
 \subsection{rhls}
 
 \begin{Verbatim}[commandchars=@\[\]]
-rhls @PYGbe[@textless[]-] @PYGap[function](w@PYGbe[=]@PYGaB["]@PYGaB[/"])
+rhls @PYGbe[@textless[]-] @PYGap[function](dir)
 \end{Verbatim}
 
-Lists the files in the directory \code{w}.
+Lists the path at \code{dir}. Wildcards allowed.
 
 
-\subsection{rhlsd}
+\subsection{rhdel}
 
 \begin{Verbatim}[commandchars=@\[\]]
-rhlsd @PYGbe[@textless[]-] @PYGap[function](fold,....)
+rhdel @PYGbe[@textless[]-] @PYGap[function](dir)
 \end{Verbatim}
 
-Returns a \emph{data frame} of files in folder \code{fold}. Wildcards are allowed in
-\code{fold}.
+Deletes file(s) at/in \code{dir}. Wildcards allowed.
 
 
-\section{Hadoop Job Related}
-
-These are related to the killing of jobs.
-
-
-\subsection{rhkill}
+\subsection{rhwrite}
 
 \begin{Verbatim}[commandchars=@\[\]]
-rhkill @PYGbe[@textless[]-] @PYGap[function](w)
+rhwrite @PYGbe[@textless[]-] @PYGap[function](lo,f,n@PYGbe[=]@PYGaD[NULL],...)
 \end{Verbatim}
 
-Kills the job with job id equal to \code{ww}. The job title can be either of
-\emph{job2009051815100003} or \emph{2009051815100003} (i.e same as the former with the job
-prefix removed).
+Writes the list \code{lo}  to the file \code{f}. \code{n} is the number of sequence files
+to split the list into.  The default value of \code{n} is
+\code{mapred.map.tasks} * \code{mapred.tasktracker.map.tasks.maximum} .
 
 
-\section{Saving R Datasets}
-
-
-\subsection{rhsave.image, rhsave, rhload}
+\subsection{rhread}
 
 \begin{Verbatim}[commandchars=@\[\]]
-rhsave.image @PYGbe[@textless[]-] @PYGap[function](file,...)
-rhsave @PYGbe[@textless[]-] @PYGap[function](file,....)
-rhload(file, envir@PYGbe[=]@PYGaD[NULL],...)
+rhread @PYGbe[@textless[]-] @PYGap[function](files,max@PYGbe[=]@PYGaD[NA],batch@PYGbe[=]@PYGaS[100],length@PYGbe[=]@PYGaS[1000])
 \end{Verbatim}
 
-Similar to \code{save.image}, \code{save} and \code{load} except that it saves(or reads)
-\code{file} to(or from) the HDFS.
+Reads files(s) from \code{files} (which could be a directory). Wildcards allowed.
+
+\code{max} is the maximum number of key-values to be read.
+
+\code{batch} is how many to key-value pairs to request from Java in one go.
+
+\code{length} is the initial size of the return list( a larger value will makes
+things faster if one is expecting to read in many items ).
+
+The latter two are important when it comes to reading sequence files with many values(100K+), set
+batch to a large number and \code{length} to an equally large number to reduce the
+number of JNI calls and vector resizes.
 
 
-\section{Creating Sequence FIles}
-
-The following are useful for creating and reading sequence files created while
-using RHIPE.
-
-
-\subsection{rhnewSqfile}
+\subsection{rhreadText}
 
 \begin{Verbatim}[commandchars=@\[\]]
-rhnewSqfile @PYGbe[@textless[]-] @PYGap[function](l,name,byrow@PYGbe[=]T,f@PYGbe[=]@PYGaD[NA],pct@PYGbe[=]@PYGaS[0.1])
+rhreadText @PYGbe[@textless[]-] @PYGap[function](filename)
 \end{Verbatim}
 
-Takes an object and writes its rows(columns if \code{byrow} is FALSE and \code{l} is a matrix/data frame) or its elements if \code{l} is a list or a scalar vector to a file on the DFS given by name. Uses default compression codec.
+Currently when outputting to text because of a bug in the code I've been forced
+to write serialized bytes in text form. To parse such a file, copy it to the
+local filesystem and use this function on the filename.
 
-Displays progress output at \code{pct} intervals. If not NA, \code{rhnewSqfile} calls \code{f} on every element, so this can be used to pass a character vector corresponding to the objects to be written.
-
-The keys correspond to row names(or column names) or names of the object.
+You might as well use binary output format.
 
 
-\subsection{rhsqallKV}
+\subsection{rhreadBin}
 
 \begin{Verbatim}[commandchars=@\[\]]
-rhsqallKV @PYGbe[@textless[]-] @PYGap[function](ford,n,verbose@PYGbe[=]F,ignore@PYGbe[=]T,local@PYGbe[=]F,...)
+rhreadBin @PYGbe[@textless[]-] @PYGap[function](filename, max@PYGbe[=]as.integer(@PYGaS[-1]), bf@PYGbe[=]as.integer(@PYGaS[0]))
 \end{Verbatim}
 
-Reads \emph{all} key(or a maximum of \code{n}),values from the sequence file
-\code{ford}. Also, if \code{ford} is a folder of sequence files, one
-can use wildcards as an appropiate value (e.g \code{tmp/p*})
-
-If \code{verbose} is TRUE, the current file being read is displayed.
-
-Returns a list of values with names corresponding to the keys.
-
-
-\section{Low Level Functions}
-
-The above two sequence files functions are written using the following functions
-
-
-\subsection{rhsqreader}
-
-\begin{Verbatim}[commandchars=@\[\]]
-rhsqreader @PYGbe[@textless[]-] @PYGap[function](ford,local@PYGbe[=]F,...)
-\end{Verbatim}
-
-\code{ford} is the path to a sequence file or folder containing sequence
-files.
-\begin{quote}
-
-Wildcards are allowed(if \code{local} is FALSE), so to process all part-xxx
-\end{quote}
-
-files in a folder use \code{rhsqreader("/x/p*")}.
-
-To obtain wildcard functionality, use a pattern. For example,
-\code{rhsqreader("/x",local=T,pattern="\textasciicircum{}p")}. is equivalent to the previous call,
-assuming \code{/x} exists on the local filesystem.This function will not go into
-subdirectories.
-\begin{quote}
-
-This function creates an object to read key/value pairs from the
-\end{quote}
-
-set of sequence files. After calling this, call \code{rhsqnextKVR} to retrieve
-key-value pairs.
-
-
-\subsection{rhsqnextKVR}
-
-\begin{Verbatim}[commandchars=@\[\]]
-rhsqnextKVR @PYGbe[@textless[]-] @PYGap[function](sqro)
-\end{Verbatim}
-
-Returns a list with two entries key and value. If none available, returns
-NULL. \code{sqro} is the object returned by \code{rhsqreader}.
-
-
-\subsection{rhsqnextpath}
-
-\begin{Verbatim}[commandchars=@\[\]]
-rhsqnextpath @PYGbe[@textless[]-] @PYGap[function](sqro)
-\end{Verbatim}
-
-When \code{rhsqreader} is used to read key-values from a folder of sequence files,
-this function switches to the next file in the folder.
-
-\begin{notice}{note}{Note:}
-This is used internally by \code{rhsqreader} and \code{rhsqnextKVR}, the user does not need to use this.
-\end{notice}
-
-
-\subsection{rhsqclose}
-
-\begin{Verbatim}[commandchars=@\[\]]
-rhsqclose @PYGbe[@textless[]-] @PYGap[function](sqro)
-\end{Verbatim}
-
-Closes an sqreader object. \code{sqro} is a sqreader object. Used internally by
-other functions.
-
-
-\section{Example}
-
-
-\subsection{Reading}
-
-Two equivalent ways to read all key value pairs in folder of sequence files.
-
-\textbf{Long Way}
-
-\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=1,stepnumber=1]
-rdr @PYGbe[@textless[]-] rhsqreader(@PYGaB["]@PYGaB[/test/one/p*"])
-@PYGap[while](@PYGaD[TRUE]){
-    value @PYGbe[@textless[]-]rhsqnextKVR(rdr)
-    @PYGap[if](is.null(value)) {
-        rdr @PYGbe[@textless[]-] rhsqnextpath(rdr)
-      @PYGap[if](is.null(rdr)) @PYGap[break];
-    }
-    print(value@$key)
-   print(value@$value)
-}
-\end{Verbatim}
-
-\textbf{Short Way}
-
-\begin{Verbatim}[commandchars=@\[\]]
-info@PYGbe[@textless[]-]rhsqallKV(@PYGaB["]@PYGaB[/test/one/p*"],ignore@PYGbe[=]F)
-\end{Verbatim}
-
-
-\subsection{Writing}
-
-\begin{Verbatim}[commandchars=@\[\]]
-x @PYGbe[@textless[]-] matrix(runif(@PYGaS[1],@PYGaS[2],@PYGaS[3],@PYGaS[4],@PYGaS[5],@PYGaS[6]),ncol@PYGbe[=]@PYGaS[2])
-rownames(x) @PYGbe[@textless[]-] c('a','b','c','d','e','f')
-rhnewSqfile(x,byrow@PYGbe[=]T,name@PYGbe[=]@PYGaB["]@PYGaB[testfile"])
-\end{Verbatim}
+Reads data outputed in `binary' form. \code{max} is the maximum number to read, -1
+is all. \code{bf} is the read buffer, 0 implies the os specified default \code{BUFSIZ}
 
 \resetcurrentobjects
 \hypertarget{--doc-ec2}{}
@@ -856,6 +666,7 @@ nbrmean @PYGbe[@textless[]-] @PYGap[function](r){
   ds @PYGbe[@textless[]-] sort(apply(d,@PYGaS[1],@PYGap[function](r) sqrt(sum((r@PYGbe[-]orig)@PYGbe[@textasciicircum[]]@PYGaS[2])))@PYGZlb[]@PYGaS[-1]@PYGZrb[])@PYGZlb[]@PYGaS[1]:@PYGaS[8]@PYGZrb[]
   mean(ds)
 }
+trials @PYGbe[@textless[]-] @PYGaS[1000000]
 \end{Verbatim}
 
 \textbf{One Machine}
@@ -870,17 +681,13 @@ system.time({r @PYGbe[@textless[]-] sapply(@PYGaS[1]:trials, nbrmean)})
 
 \textbf{Distributed, output to file}
 
-\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=1,stepnumber=1]
-system.time({
-  r @PYGbe[@textless[]-] rhlapply(
-                trials, func@PYGbe[=]nbrmean,
-                output.folder@PYGbe[=]@PYGaB["]@PYGaB[/test/one"])
-})
-user  system  elapsed
- @PYGaS[63.117]  @PYGaS[2.330] @PYGaS[179.747]
+\begin{Verbatim}[commandchars=@\[\]]
+mapred @PYGbe[@textless[]-] list(mapred.map.tasks@PYGbe[=]@PYGaS[1000])
+r @PYGbe[@textless[]-] rhlapply(@PYGaS[1000000], fun@PYGbe[=]nbrmean,ofolder@PYGbe[=]@PYGaB["]@PYGaB[/test/one"],mapred@PYGbe[=]mapred)
+rhex(r)
 \end{Verbatim}
 
-A \textbf{9x speed bump}. Note, the outputs are compressed, so Hadoop needs to decompress them. If native decompression libraries are not found, Hadoop uses java to decompress.
+Which took 7 minutes on a 4 core machine running 6 JVMs at once.
 
 
 \subsection{Using Shared Files and Side Effects}
@@ -892,7 +699,7 @@ h@PYGbe[=]rhlapply(length(simlist)
     pdf(@PYGaB["]@PYGaB[tmp/a.pdf"])
     plot(animage)
     dev.off()},
-  configure@PYGbe[=]expression({
+  setup@PYGbe[=]expression({
     load(@PYGaB["]@PYGaB[session.Rdata"])
   }),
   hadoop@PYGbe[=]list(mapred.map.tasks@PYGbe[=]@PYGaS[1000]),
@@ -907,7 +714,7 @@ rhsave.image(@PYGaB["]@PYGaB[/tmp/myimage.Rdata"])
 rhlapply(N,@PYGap[function](r) {
   object @PYGbe[@textless[]-] dataset@PYGZlb[]@PYGZlb[]r@PYGZrb[]@PYGZrb[]
   G(object)
-},configure@PYGbe[=]expression({load(@PYGaB["]@PYGaB[myimage.Rdata"])}))
+},setup@PYGbe[=]expression({load(@PYGaB["]@PYGaB[myimage.Rdata"])}))
 \end{Verbatim}
 
 In the above example, I wish to apply the \code{G} to every element in \code{dataset}.
@@ -926,207 +733,28 @@ rhlapply(@PYGaS[10000],@PYGap[function](r) paste(sample(letters@PYGZlb[]@PYGaS[1
 
 Word count using the sequence file
 
-\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=1,stepnumber=1]
-m @PYGbe[@textless[]-] @PYGap[function](key,word){
-   list(list(key@PYGbe[=]word,value@PYGbe[=]@PYGaS[1]))
-   }
- r @PYGbe[@textless[]-] @PYGap[function](key,value){
-   value @PYGbe[@textless[]-] do.call(@PYGaB["]@PYGaB[sum"],value)
-   @PYGap[return](list(list(key@PYGbe[=]key,value@PYGbe[=]value)))
-  }
-\end{Verbatim}
-
 Run it
 
 \begin{Verbatim}[commandchars=@\[\]]
-rhmr(map@PYGbe[=]m,reduce@PYGbe[=]r,input.folder@PYGbe[=]@PYGaB["]@PYGaB[/tmp/words"],output.folder@PYGbe[=]'@PYGbe[/]tmp@PYGbe[/]words.cnt'
-   ,inputformat@PYGbe[=]'SequenceFileInputFormat',outputformat@PYGbe[=]'SequenceFileOutputFormat')
+z @PYGbe[@textless[]-] rhmr(map@PYGbe[=]m,reduce@PYGbe[=]r,inout@PYGbe[=]c(@PYGaB["]@PYGaB[sequence"],@PYGaB["]@PYGaB[sequence"]),
+       ifolder@PYGbe[=]@PYGaB["]@PYGaB[/tmp/words"],ofolder@PYGbe[=]'@PYGbe[/]tmp@PYGbe[/]wordcount')
+ rhex(z)
 \end{Verbatim}
 
 
 \subsection{Subset a file}
 
-We can use this RHIPE to subset files.
+We can use this RHIPE to subset files. Setting \code{mapred.reduce.tasks} to 5 writes the subsetted data across 5 files (even though we haven't provided a reduce task)
 
 \begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=1,stepnumber=1]
-m @PYGbe[@textless[]-] @PYGap[function](key,val){
-  @PYGap[if](condition.is.true(val))
-    @PYGap[return](list(list(key@PYGbe[=]'',value@PYGbe[=]val)))
-}
-rhmr(mapper@PYGbe[=]m,reduce@PYGbe[=]@PYGap[function](){},
-     input.folder@PYGbe[=]inf,output.folder@PYGbe[=]opf,
-     hadoop@PYGbe[=]list(mapred.reduce.tasks@PYGbe[=]@PYGaS[0]))
-\end{Verbatim}
-
-
-\subsection{Covariance Matrix}
-
-First create a file of 50 million rows with 100 columns.
-
-\begin{Verbatim}[commandchars=@\[\]]
-f @PYGbe[@textless[]-] @PYGap[function](k){
-  @PYGap[return](rnorm(@PYGaS[100],@PYGaS[0],@PYGaS[1]))
-}
-rhlapply(@PYGaS[50]e6,f,output.folder@PYGbe[=]@PYGaB["]@PYGaB[/tmp/bigd"],takeAll@PYGbe[=]F)
-\end{Verbatim}
-
-Now calculate the column sums, sum of squares and dot products which is sufficient to calculate correlations, for the first 100 columns.
-
-\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=1,stepnumber=1]
-m @PYGbe[@textless[]-] @PYGap[function](k,v){
-  v @PYGbe[@textless[]-] v@PYGZlb[]@PYGaS[1]:@PYGaS[100]@PYGZrb[]
-  coln @PYGbe[@textless[]-] @PYGaS[1]:(length(v)@PYGbe[-]@PYGaS[1])
-  tl @PYGbe[@textless[]-] length(v)
-  ret @PYGbe[@textless[]-] sapply(coln,@PYGap[function](i){
-    w @PYGbe[@textless[]-] v@PYGZlb[]i:tl@PYGZrb[]
-    sums @PYGbe[@textless[]-] w@PYGZlb[]@PYGaS[1]@PYGZrb[]
-    ssq @PYGbe[@textless[]-] w@PYGZlb[]@PYGaS[1]@PYGZrb[]@PYGbe[@textasciicircum[]]@PYGaS[2]
-    dotprod @PYGbe[@textless[]-] w@PYGZlb[]@PYGaS[1]@PYGZrb[]@PYGbe[*]w@PYGZlb[]@PYGaS[2]:length(w)@PYGZrb[]
-    list(key@PYGbe[=]as.integer(i),value@PYGbe[=]list(sums@PYGbe[=]sums,ssq@PYGbe[=]ssq,dotprod@PYGbe[=]dotprod))
-  },simplify@PYGbe[=]F)
-  @PYGap[return](ret)
-}
-
-r @PYGbe[@textless[]-] @PYGap[function](k,v){
-  summs @PYGbe[@textless[]-] sum(do.call(@PYGaB["]@PYGaB[rbind"], lapply(v,@PYGap[function](r) r@$sums)))
-  ssq @PYGbe[@textless[]-] sum(do.call(@PYGaB["]@PYGaB[rbind"], lapply(v,@PYGap[function](r) r@$ssq)))
-  dotprod @PYGbe[@textless[]-] apply(do.call(@PYGaB["]@PYGaB[rbind"], lapply(v,@PYGap[function](r) r@$dotprod)),@PYGaS[2],sum)
-  ret @PYGbe[=] list(list(key@PYGbe[=]k,value@PYGbe[=]list(sums@PYGbe[=]summs,ssq@PYGbe[=]ssq,dotprod@PYGbe[=]dotprod)))
-  @PYGap[return](ret)
-}
-
-rhmr(map@PYGbe[=]m,reduce@PYGbe[=]r,combiner@PYGbe[=]T,input.folder@PYGbe[=]@PYGaB["]@PYGaB[/tmp/bigd"],output.folder@PYGbe[=]@PYGaB["]@PYGaB[/tmp/bigo"],
-     inputformat@PYGbe[=]@PYGaB["]@PYGaB[SequenceFileInputFormat"],outputformat@PYGbe[=]@PYGaB["]@PYGaB[SequenceFileOutputFormat"])
-\end{Verbatim}
-
-The keys in the sequence file are the column numbers, each entry will have a contain value with the names sums,/ssq/ and dotprod which is enough to calculate correlations.
-
-\begin{Verbatim}[commandchars=@\[\]]
-suff @PYGbe[@textless[]-] rhsqallKV(@PYGaB["]@PYGaB[/tmp/bigo"],ignore@PYGbe[=]F)
-\end{Verbatim}
-
-
-\subsection{Naive K-Means Clustering}
-
-Is there a need to cluster a billion row data set. Take a large sample, estimate the variances(of means) of the concerned columns and then take another sample controlling for the variance and cluster on the sample.
-
-However, if you must,
-
-Find the number of rows, we assume text input format.
-
-\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=1,stepnumber=1]
-m @PYGbe[@textless[]-] @PYGap[function](key,value){
-  @PYGaf[@#@# we use as.integer to save on the bytes sent.]
-  @PYGap[return](list(list(key@PYGbe[=]as.integer(@PYGaS[1]),value@PYGbe[=]@PYGaS[1])))
-}
-r @PYGbe[@textless[]-] @PYGap[function](key,value){
-  value @PYGbe[@textless[]-] sum(unlist(value))
-  @PYGap[return](list(list(key@PYGbe[=]'count', value@PYGbe[=]value)))
-}
-rhmr(map@PYGbe[=]m,reducer@PYGbe[=]r, combiner@PYGbe[=]T, input.folder@PYGbe[=]X,output.folder@PYGbe[=]Y)
-\end{Verbatim}
-
-Read in the text file (broken up in part* files inside Y on the HDFS), there will be 1 row with key equal to count and the value is the number of rows.
-
-Sample k values and makes these the centers c0
-
-\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=1,stepnumber=1]
- @PYGaf[@#@#Only approximate sample, so increase it to get enough.]
- pct @PYGbe[@textless[]-] ncols @PYGbe[/] nrows@_of@_dataset@PYGbe[*]@PYGaS[2]
-m @PYGbe[@textless[]-] @PYGap[function](key,value){
-  y @PYGbe[@textless[]-] runif(@PYGaS[1])
-  @PYGap[if](y @PYGbe[@textless[]] pct)
-    @PYGap[return](list(list(key@PYGbe[=]@PYGaD[NULL],value@PYGbe[=]value)))
-}
-rhmr(map@PYGbe[=]m,reducer@PYGbe[=]@PYGap[function](){},preload@PYGbe[=]list(env@PYGbe[=]c('pct')),
-     input.folder@PYGbe[=]X,output.folder@PYGbe[=]Y,
-     hadoop@PYGbe[=]list(mapred.reduce.tasks@PYGbe[=]@PYGaS[0],rhipejob.kvsep@PYGbe[=]''))
-system(@PYGaB["]@PYGaB[@$HADOOP/bin/hadoop dfs -cat /Y/p* @textgreater[] /tmp/centers.txt"])
-read.table(@PYGaB["]@PYGaB[/tmp/centers.txt"])
-@PYGaf[@#@# Create a matrix centers which has many columns as there are in there dataset]
-@PYGaf[@#@# and k rows]
-\end{Verbatim}
-
-Find the distance of every point to the centers and emit the the center to which it is closest.
-
-\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=1,stepnumber=1]
- m @PYGbe[@textless[]-] @PYGap[function](r){
-   r @PYGbe[@textless[]-] as.numeric(r)
-   ret @PYGbe[@textless[]-] sapply(@PYGaS[1]:nrow(centers),@PYGap[function](k){
-     m@PYGbe[=]centers@PYGZlb[]k,@PYGZrb[]
-     c(k,(r@PYGZlb[]@PYGaS[2]@PYGZrb[]@PYGbe[-]m@PYGZlb[]@PYGaS[2]@PYGZrb[])@PYGbe[@textasciicircum[]]@PYGaS[2]@PYGbe[+](r@PYGZlb[]@PYGaS[1]@PYGZrb[]@PYGbe[-]m@PYGZlb[]@PYGaS[1]@PYGZrb[])@PYGbe[@textasciicircum[]]@PYGaS[2])
-   },simplify@PYGbe[=]T)
-   u @PYGbe[@textless[]-] which.min(ret@PYGZlb[]@PYGaS[2],@PYGZrb[])
-   ret @PYGbe[@textless[]-] list( list( key@PYGbe[=]ret@PYGZlb[]@PYGaS[1],u@PYGZrb[], value @PYGbe[=] c(r,@PYGaS[1])))
-   @PYGap[return](ret)
- }
- r @PYGbe[@textless[]-] @PYGap[function](key,value){
-   value @PYGbe[@textless[]-] do.call(@PYGaB["]@PYGaB[rbind"],value)
-   l @PYGbe[@textless[]-] list( list(key@PYGbe[=]key, value@PYGbe[=]apply(value,@PYGaS[2],sum)))
-   @PYGap[return](l)
- }
-rhmr(map@PYGbe[=]m,reduce@PYGbe[=]r,input.folder@PYGbe[=]@PYGaB["]@PYGaB[X"],output.folder@PYGbe[=]@PYGaB["]@PYGaB[Y"],combiner@PYGbe[=]T)
-\end{Verbatim}
-
-Read in the centers and see update centers (unless there is no change)
-
-If finished iterating, assign rows to centers.
-
-\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=1,stepnumber=1]
-assgn @PYGbe[@textless[]-] @PYGap[function](key,value){
-  r @PYGbe[@textless[]-] as.numeric(value)
-  ret @PYGbe[@textless[]-] sapply(@PYGaS[1]:nrow(centers),@PYGap[function](k){
-    m @PYGbe[@textless[]-] centers@PYGZlb[]k,@PYGZrb[]
-    c(k,(r@PYGZlb[]@PYGaS[2]@PYGZrb[]@PYGbe[-]m@PYGZlb[]@PYGaS[2]@PYGZrb[])@PYGbe[@textasciicircum[]]@PYGaS[2]@PYGbe[+](r@PYGZlb[]@PYGaS[1]@PYGZrb[]@PYGbe[-]m@PYGZlb[]@PYGaS[1]@PYGZrb[])@PYGbe[@textasciicircum[]]@PYGaS[2])
-  },simplify@PYGbe[=]T)
-  u @PYGbe[@textless[]-] which.min(ret@PYGZlb[]@PYGaS[2],@PYGZrb[])
-  fret @PYGbe[@textless[]-] c(r,ret@PYGZlb[]@PYGaS[1],u@PYGZrb[])
-  @PYGap[if] (runif(@PYGaS[1])@PYGbe[@textless[]]@PYGaS[0.2]) @PYGap[return](list((list(key@PYGbe[=]key,value@PYGbe[=]fret)))
-                         }
-  rhmr(map@PYGbe[=]assgn,red@PYGbe[=]@PYGap[function](){},input.folder@PYGbe[=]@PYGaB["]@PYGaB[X"],output.folder@PYGbe[=]@PYGaB["]@PYGaB[Y"],
-       preload@PYGbe[=]list(env@PYGbe[=]'centers'),
-       hadoop@PYGbe[=]list(mapred.reduce.tasks@PYGbe[=]@PYGaS[0]))
-\end{Verbatim}
-
-
-\subsection{Using a step == TRUE}
-
-Like \code{tapply}, this calculates the sum of the second column in a text file
-
-One can use a combiner, but my file is small and I did not bother.
-
-\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=1,stepnumber=1]
-mapper @PYGbe[@textless[]-] @PYGap[function](key,r){
-  x @PYGbe[@textless[]-] strsplit(r,@PYGaB["]@PYGaB[ +"])@PYGZlb[]@PYGZlb[]@PYGaS[1]@PYGZrb[]@PYGZrb[]
-  ret @PYGbe[@textless[]-] list()
-  ret@PYGZlb[]@PYGZlb[]@PYGaS[1]@PYGZrb[]@PYGZrb[] @PYGbe[@textless[]-] list(key @PYGbe[=] x@PYGZlb[]@PYGaS[1]@PYGZrb[], value @PYGbe[=] as.numeric(x@PYGZlb[]@PYGaS[2]@PYGZrb[]))
-  @PYGap[return](ret)
-}
-reducer @PYGbe[@textless[]-] @PYGap[function](key,r){
-  r @PYGbe[@textless[]-] do.call(@PYGaB["]@PYGaB[rbind"],r)
-  v@PYGbe[=]apply(r,@PYGaS[2],sum)
-  ret @PYGbe[@textless[]-] list()
-  ret@PYGZlb[]@PYGZlb[]@PYGaS[1]@PYGZrb[]@PYGZrb[] @PYGbe[@textless[]-] list(key@PYGbe[=]key,value@PYGbe[=]v)
-  ret
-}
-rhmr(input.folder@PYGbe[=]@PYGaB["]@PYGaB[/tmp/wc"],output.folder@PYGbe[=]@PYGaB["]@PYGaB[/tmp/rand.out"],map@PYGbe[=]mapper,reduce@PYGbe[=]reduce)
-\end{Verbatim}
-
-Doing the same with \code{step} equal to TRUE
-
-\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=1,stepnumber=1]
-reduce @PYGbe[@textless[]-] @PYGap[function](key,value){
-@PYGaf[@#@#Note the global assignment, the assignment is now permanent]
-@PYGaf[@#@#which is required since this function will be called repeatedly]
-  @PYGap[if](red.status@PYGbe[==]@PYGaS[1]) sums @PYGbe[@textless[]]@PYGbe[@textless[]-] @PYGaS[1]
-  @PYGap[else] @PYGap[if] (red.status@PYGbe[==]@PYGaS[0]){
-    sums @PYGbe[@textless[]]@PYGbe[@textless[]-] sums@PYGbe[+]value
-  }else{
-    @PYGaf[@#@#red.status==-1]
-    list(list(key@PYGbe[=]key,value@PYGbe[=]sums))
-  }
-}
-rhmr(input.folder@PYGbe[=]@PYGaB["]@PYGaB[/tmp/rand2"],output.folder@PYGbe[=]@PYGaB["]@PYGaB[/tmp/rand.out"],map@PYGbe[=]mapper,reduce@PYGbe[=]reduce,step@PYGbe[=]T)
+m @PYGbe[@textless[]-] expression({
+  @PYGap[for](x in map.values){
+    y @PYGbe[@textless[]-] strsplit(x,@PYGaB["]@PYGaB[ +"])@PYGZlb[]@PYGZlb[]@PYGaS[1]@PYGZrb[]@PYGZrb[]
+    @PYGap[for](w in y) rhcollect(w,T)
+  }})
+z @PYGbe[@textless[]-] rhmr(map@PYGbe[=]m,inout@PYGbe[=]c(@PYGaB["]@PYGaB[text"],@PYGaB["]@PYGaB[binary"]),
+    ifolder@PYGbe[=]@PYGaB["]@PYGaB[X"],ofolder@PYGbe[=]'Y',mapred@PYGbe[=]list(mapred.reduce.tasks@PYGbe[=]@PYGaS[5]))
+rhex(z)
 \end{Verbatim}
 
 \resetcurrentobjects
@@ -1140,7 +768,7 @@ Local Testing?
 \end{enumerate}
 
 Easily enough. In \code{rhmr} or \code{rhlapply}, set \code{mapred.job.tracker} to
-`local' in the \code{hadoop.options} option of the respective command. This will
+`local' in the \code{mapred} option of the respective command. This will
 use the local jobtracker to run your commands.
 
 However keep in mind,
@@ -1152,28 +780,8 @@ Speed?
 
 \end{enumerate}
 
-Not so good. A lot of data is transferred and because of R's serialization and
-my effort to allow \emph{any} R data type to be transferred, about 6 times more data
-is transferred in the RHIPE wordcount example(see Mainpage )
-compared to the Java version. As such, this was about 5 times slower for 9MM
-lines.
-\begin{enumerate}
-\item {} 
-Other Approaches?
-
-\end{enumerate}
-\begin{itemize}
-\item {} 
-I will try using Unix pipes to feed data to R instead of Rserve.
-
-\item {} 
-Also, I will just settle for raw,numeric, complex, character vectors and lists
-(whose elements are one of the aforementioned types) in conjunction with
-Protocol Buffers. This does reduce the transparency to the R user in that
-he/she will now have to serialize other structures (e.g objects like \code{xyplot}
-objects or objects with special attributes
-
-\end{itemize}
+Similar to Hadoop Streaming. The bottlenecks are writing and reading to STDIN
+pipes and R.
 
 
 \renewcommand{\indexname}{Module Index}
