@@ -10,7 +10,7 @@
 
 
 \title{rhipe Documentation}
-\date{September 08, 2009}
+\date{September 10, 2009}
 \release{0.5}
 \author{Saptarshi Guha}
 \newcommand{\sphinxlogo}{}
@@ -257,7 +257,7 @@ rhmr @PYGbe[@textless[]-] @PYGap[function](map,reduce@PYGbe[=]@PYGaD[NULL],
          shared@PYGbe[=]c(),
          jarfiles@PYGbe[=]c(),
          copyFiles@PYGbe[=]F,
-         opts@PYGbe[=]rhoptions())
+         opts@PYGbe[=]rhoptions(),jobname@PYGbe[=]@PYGaB["]@PYGaB["])
 \end{Verbatim}
 \begin{description}
 \item[\code{map}]
@@ -319,6 +319,9 @@ For side effects to be copied back to the DFS, set this to TRUE, otherwise they 
 
 \item[\code{mapred}]
 Set Hadoop options here and RHIPE options.
+
+\item[\code{jobname}]
+the jobname, if not given, then current date and time is the job title.
 
 \end{description}
 
