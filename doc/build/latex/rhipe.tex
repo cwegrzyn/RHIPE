@@ -109,16 +109,12 @@ protobuf jar file inside it.
 If installing protobuf to a non standard location, update the
 PKG\_CONFIG\_PATH variable, e.g
 
-\end{description}
-
-\end{enumerate}
-\begin{quote}
-
 \begin{Verbatim}[commandchars=@\[\]]
 export PKG@_CONFIG@_PATH@PYGbe[=]@$PKG@_CONFIG@_PATH:@$CUSTROOT@PYGbe[/]lib@PYGbe[/]pkgconfig@PYGbe[/]
 \end{Verbatim}
-\end{quote}
-\begin{enumerate}
+
+\end{description}
+
 \item {} 
 \emph{R} , tested on 2.8
 
@@ -133,12 +129,11 @@ Tested on RHEL Linux, though \emph{may} work on Windows
 \section{Installation}
 
 On every machine
-\begin{description}
-\item[::]
+
+\begin{Verbatim}[commandchars=@\[\]]
 tar zxvf rhipe.VERSION.tar.gz
 R CMD INSTALL rhipe.VERSION
-
-\end{description}
+\end{Verbatim}
 
 To load it
 
@@ -181,7 +176,7 @@ rhlapply @PYGbe[@textless[]-] @PYGap[function]( ll@PYGbe[=]@PYGaD[NULL],
                      readIn@PYGbe[=]T,
                      inout@PYGbe[=]c('lapply','sequence')
                      mapred@PYGbe[=]list()
-                     setup@PYGbe[=]@PYGaD[NULL]
+                     setup@PYGbe[=]@PYGaD[NULL],jobname@PYGbe[=]@PYGaB["]@PYGaB[rhlapply"],...
                      )
 \end{Verbatim}
 
@@ -216,6 +211,9 @@ Options passed onto \code{rhmr}
 \item[\code{setup}]
 And expression that is called before running \code{func}. Called once per
 JVM.
+
+\item[\code{...}]
+passed onto RHMR.
 
 \end{description}
 
