@@ -1,4 +1,4 @@
-This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=pdflatex 2007.5.18)  11 SEP 2009 11:51
+This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=pdflatex 2007.5.18)  11 SEP 2009 16:40
 entering extended mode
  %&-line parsing enabled.
 **rhipe.tex
@@ -815,20 +815,20 @@ LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <14.4> not available
 ]
 Chapter 2.
 LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <24.88> not available
-(Font)              Font shape `T1/pcr/b/n' tried instead on input line 147.
+(Font)              Font shape `T1/pcr/b/n' tried instead on input line 146.
 LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <9> not available
-(Font)              Font shape `T1/pcr/b/n' tried instead on input line 172.
+(Font)              Font shape `T1/pcr/b/n' tried instead on input line 171.
 [5]
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <12> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 221.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 220.
  [6]
 Chapter 3.
 LaTeX Font Info:    Font shape `T1/pcr/m/it' in size <9> not available
-(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 248.
+(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 247.
 [7
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 297--298
+Underfull \hbox (badness 10000) in paragraph at lines 296--297
 []\T1/ptm/m/n/10 indicates Text For-mat. Use
  []
 
@@ -840,12 +840,12 @@ Chapter 4.
 
 ]
 Chapter 5.
-LaTeX Font Info:    Try loading font information for TS1+ptm on input line 535.
+LaTeX Font Info:    Try loading font information for TS1+ptm on input line 534.
 
 (/usr/local/texlive/2007/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
-Underfull \hbox (badness 10000) in paragraph at lines 561--563
+Underfull \hbox (badness 10000) in paragraph at lines 560--562
 []\T1/ptm/m/n/10 choose the Ama-zon ma-chine in-stance type. For de-tails, go t
 o
  []
@@ -853,7 +853,7 @@ o
 [15] [16]
 Chapter 6.
 LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/pcr/b/n' tried instead on input line 625.
+(Font)              Font shape `T1/pcr/b/n' tried instead on input line 624.
 [17
 
 ] [18]
@@ -878,7 +878,7 @@ mf-dist/fonts/type1/urw/helvetic/uhvbo8a.pfb></usr/local/texlive/2007/texmf-dis
 t/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2007/texmf-dist/fonts/ty
 pe1/urw/times/utmr8a.pfb></usr/local/texlive/2007/texmf-dist/fonts/type1/urw/ti
 mes/utmri8a.pfb>
-Output written on rhipe.pdf (23 pages, 163402 bytes).
+Output written on rhipe.pdf (23 pages, 163371 bytes).
 PDF statistics:
  328 PDF objects out of 1000 (max. 8388607)
  81 named destinations out of 1000 (max. 131072)
