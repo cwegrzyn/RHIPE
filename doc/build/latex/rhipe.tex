@@ -10,7 +10,7 @@
 
 
 \title{rhipe Documentation}
-\date{September 10, 2009}
+\date{September 11, 2009}
 \release{0.5}
 \author{Saptarshi Guha}
 \newcommand{\sphinxlogo}{}
@@ -525,16 +525,7 @@ is all. \code{bf} is the read buffer, 0 implies the os specified default \code{B
 
 \section{Introduction}
 
-We have release two AMIs(32 and 64bit). Both are based on Fedora 8 and have
-Hadoop 0.19.1,R 2.8 and RIPE (latest) installed. \href{http://s3sync.net/wiki}{s3sync} is also present.
-\begin{description}
-\item[32 bit]
-ami-4b678122
-
-\item[64 bit]
-ami-9f7492f6
-
-\end{description}
+There is one 32 bit EC2 AMI with R-2.8, Hadoop 0.21 and the latest RHIPE. \href{http://s3sync.net/wiki}{s3sync} is also present.
 
 The following describes the usage of the EC2 scripts.
 
@@ -563,15 +554,6 @@ same as above
 \item[AWS\_SECRET\_ACCESS\_KEY]
 same as above
 
-\item[RSOPTS]
-options to Rserve, default:
-
-\end{description}
-
-\begin{Verbatim}[commandchars=@\[\]]
--max-nsize@PYGbe[=]1G --max-ppsize@PYGbe[=]100000 --RS-port 8888
-\end{Verbatim}
-\begin{description}
 \item[R\_USER\_FILE]
 a URL to an R script. This file is executed on machine boot up. Useful to install R packages. Read \code{bin/hadoop-ec2-env.sh.template} for details.
 
