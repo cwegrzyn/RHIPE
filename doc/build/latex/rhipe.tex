@@ -817,12 +817,13 @@ Serialization/deserialization(for these extras SEXP types)  \emph{appear} to wor
 \code{serialize.c} (in R 2.9 sources) uses a hashtable to add references to previously added environments and symbols(instead of adding them again). This reduces the size of the serialized expresson. \code{rprotobuf} does not do any such thing. It ought to and in future it will.
 
 \textbf{Download}
+
 Package(with source) : \href{http://ml.stat.purdue.edu/rprotobuf\_1.1.tar.gz}{http://ml.stat.purdue.edu/rprotobuf\_1.1.tar.gz}
 
 Install
 
 \begin{Verbatim}[commandchars=@\[\]]
-R CMD INSTALL rprotobuf@_1.0.tar.gz
+R CMD INSTALL rprotobuf@_1.1.tar.gz
 \end{Verbatim}
 
 {[}1{]} \href{http://code.google.com/apis/protocolbuffers/docs/overview.html}{http://code.google.com/apis/protocolbuffers/docs/overview.html}
