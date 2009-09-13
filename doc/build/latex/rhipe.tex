@@ -10,7 +10,7 @@
 
 
 \title{rhipe Documentation}
-\date{September 11, 2009}
+\date{September 12, 2009}
 \release{0.5}
 \author{Saptarshi Guha}
 \newcommand{\sphinxlogo}{}
@@ -761,24 +761,56 @@ A package called rprotobuf which implements a simple serialization using Googles
 protocol buffers{[}1{]}.  The package also includes some miscellaneous functions for
 writing/reading variable length encoded integers, and Base64 encoding/decoding
 related functions.  The package can be downloaded from
-\href{http://ml.stat.purdue.edu/rprotobuf\_1.0.tar.gz}{http://ml.stat.purdue.edu/rprotobuf\_1.0.tar.gz} it requires one to install libproto
+\href{http://ml.stat.purdue.edu/rprotobuf\_1.1.tar.gz}{http://ml.stat.purdue.edu/rprotobuf\_1.1.tar.gz} it requires one to install \code{libproto}
 (Googles protobuffer library)
 
-\emph{Brief Description}
+\textbf{Brief Description}
 
 The R objects that can be serialized are numerics,complex,integers,strings, logicals,
 raw,nulls and lists.  Attributes of the aforementioned are preserved. NA is also
 preserved(for the above) As such, the objects include factors and matrices.  The proto file can be
 found in the source.
 
-\emph{Todo}:
+\textbf{Extras}
 
-Very possible though needs some reading on my part: it is possible to
-extend this to serialize functions, expressions, environments and several
-other objects.  However that is some time in the future.
+With version 1.1, \code{rprotobuf} will now serialize
+\begin{itemize}
+\item {} 
+SYMSXP,
 
-\emph{Download}
-package(with source) : \href{http://ml.stat.purdue.edu/rprotobuf\_1.0.tar.gz}{http://ml.stat.purdue.edu/rprotobuf\_1.0.tar.gz}
+\item {} 
+LISTSXP
+
+\item {} 
+CLOSXP
+
+\item {} 
+ENVSXP ( no locking )
+
+\item {} 
+PROMSXP
+
+\item {} 
+LANGSXP
+
+\item {} 
+DOTSXP
+
+\item {} 
+S4SXP
+
+\item {} 
+EXPRSXP
+
+\end{itemize}
+
+Serialization/deserialization  \emph{appear} to work but I cannot prove that (one needs to inspect my code with a thorough knowledge of R internals). They remain undocumented in the help pages.
+
+\textbf{Regrets}
+\code{serialize.c{}`{}`(in R 2.9 sources) uses Hashtable to add references to previously added environments and symbols(instead of adding them again). This reduces the size of the serialized expresson. {}`{}`rprotobuf} does not do any such thing. Maybe in future it will (and should).
+
+\textbf{Download}
+package(with source) : \href{http://ml.stat.purdue.edu/rprotobuf\_1.1.tar.gz}{http://ml.stat.purdue.edu/rprotobuf\_1.1.tar.gz}
 
 Install
 
