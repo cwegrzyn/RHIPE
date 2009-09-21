@@ -10,7 +10,7 @@
 
 
 \title{rhipe Documentation}
-\date{September 12, 2009}
+\date{September 20, 2009}
 \release{0.5}
 \author{Saptarshi Guha}
 \newcommand{\sphinxlogo}{}
@@ -490,21 +490,21 @@ to split the list into.  The default value of \code{n} is
 \subsection{rhread}
 
 \begin{Verbatim}[commandchars=@\[\]]
-rhread @PYGbe[@textless[]-] @PYGap[function](files,max@PYGbe[=]@PYGaD[NA],batch@PYGbe[=]@PYGaS[100],length@PYGbe[=]@PYGaS[1000])
+rhread @PYGbe[@textless[]-] @PYGap[function](files,verbose@PYGbe[=]T)
 \end{Verbatim}
 
 Reads files(s) from \code{files} (which could be a directory). Wildcards allowed.
 
-\code{max} is the maximum number of key-values to be read.
+If \code{verbose} is True, information is displayed (useful when reading many files)
 
-\code{batch} is how many to key-value pairs to request from Java in one go.
 
-\code{length} is the initial size of the return list( a larger value will makes
-things faster if one is expecting to read in many items ).
+\subsection{rhmerge}
 
-The latter two are important when it comes to reading sequence files with many values(100K+), set
-batch to a large number and \code{length} to an equally large number to reduce the
-number of JNI calls and vector resizes.
+\begin{Verbatim}[commandchars=@\[\]]
+rhmerge(inr,ou)
+\end{Verbatim}
+
+\code{inr} can have wildcards. Usually used to merge all files in a directory into one file \code{ou} on the local file system.
 
 
 \subsection{rhreadBin}
