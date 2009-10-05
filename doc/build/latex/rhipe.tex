@@ -10,7 +10,7 @@
 
 
 \title{rhipe Documentation}
-\date{September 27, 2009}
+\date{October 04, 2009}
 \release{0.5}
 \author{Saptarshi Guha}
 \newcommand{\sphinxlogo}{}
@@ -127,6 +127,15 @@ Tested on RHEL Linux, though \emph{may} work on Windows
 
 
 \section{Installation}
+
+Rhipe requires the following environment variables
+
+\begin{Verbatim}[commandchars=@\[\]]
+HADOOP@PYGbe[=]location of Hadoop installation
+HADOOP@_LIB@PYGbe[=]location of lib jar files included with Hadoop, usually
+@$HADOOP@PYGbe[/]lib
+HADOOP@_CONF@_DIR@PYGbe[=]location of Hadoop conf folder, (usually @$HADOOP@PYGbe[/]conf)
+\end{Verbatim}
 
 On every machine
 
@@ -761,7 +770,7 @@ A package called rprotobuf which implements a simple serialization using Googles
 protocol buffers{[}1{]}.  The package also includes some miscellaneous functions for
 writing/reading variable length encoded integers, and Base64 encoding/decoding
 related functions.  The package can be downloaded from
-\href{http://ml.stat.purdue.edu/rprotobuf\_1.1.tar.gz}{http://ml.stat.purdue.edu/rprotobuf\_1.1.tar.gz} . It requires one to install \code{libproto}
+\href{http://ml.stat.purdue.edu/rpackages/rprotobuf\_1.1.tar.gz}{http://ml.stat.purdue.edu/rpackages/rprotobuf\_1.1.tar.gz} . It requires one to install \code{libproto}
 (Googles protobuffer library)
 
 \textbf{Requirements}
@@ -818,7 +827,7 @@ Serialization/deserialization(for these extras SEXP types)  \emph{appear} to wor
 
 \textbf{Download}
 
-Package(with source) : \href{http://ml.stat.purdue.edu/rprotobuf\_1.1.tar.gz}{http://ml.stat.purdue.edu/rprotobuf\_1.1.tar.gz}
+Package(with source) : \href{http://ml.stat.purdue.edu/rpackages/rprotobuf\_1.1.tar.gz}{http://ml.stat.purdue.edu/rpackages/rprotobuf\_1.1.tar.gz}
 
 Install
 
