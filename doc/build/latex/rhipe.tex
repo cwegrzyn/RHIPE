@@ -10,8 +10,8 @@
 
 
 \title{rhipe Documentation}
-\date{October 04, 2009}
-\release{0.5}
+\date{October 12, 2009}
+\release{0.51}
 \author{Saptarshi Guha}
 \newcommand{\sphinxlogo}{}
 \renewcommand{\releasename}{Release}
@@ -184,7 +184,7 @@ rhlapply @PYGbe[@textless[]-] @PYGap[function]( ll@PYGbe[=]@PYGaD[NULL],
                      readIn@PYGbe[=]T,
                      inout@PYGbe[=]c('lapply','sequence')
                      mapred@PYGbe[=]list()
-                     setup@PYGbe[=]@PYGaD[NULL],jobname@PYGbe[=]@PYGaB["]@PYGaB[rhlapply"],...
+                     setup@PYGbe[=]@PYGaD[NULL],jobname@PYGbe[=]@PYGaB["]@PYGaB[rhlapply"],doLocal@PYGbe[=]F,...
                      )
 \end{Verbatim}
 
@@ -220,6 +220,9 @@ Options passed onto \code{rhmr}
 And expression that is called before running \code{func}. Called once per
 JVM.
 
+\item[\code{doLocal}]
+Default is \code{F}. Sent to \code{rhread}
+
 \item[\code{...}]
 passed onto RHMR.
 
@@ -229,6 +232,26 @@ passed onto RHMR.
 \subsection{RETURN}
 
 An object that is passed onto \code{rhex}.
+
+
+\subsection{IMPORTANT}
+
+The object passed to rhex has variable called \code{rhipe\_command} which is the
+command of the program that Hadoop sends information to. In case the client
+machine's (machine from which commands are being sent ) R installation is different from the
+tasktrackers' R installation the RHIPE command runner wont be found. For example
+suppose my cluster is linux and my client is OS X , then the \code{rhipe\_command}
+variable will reflect the location of the rhipe command runner on OS X and not
+that of the taskttrackers(Linux) R distribution.
+
+There are two ways to fix this
+a) after \code{z \textless{}- rhlapply(...)} change \code{r{[}{[}1{]}{]}{[}{[}1{]}{]}\$rhipe\_command} to the
+value it should be on the tasktrackers.
+
+or
+
+b) set the environment variable \code{RHIPECOMMAND} on each of tasktrackers. RHIPE
+java client will read this first before reading the above variable.
 
 \resetcurrentobjects
 \hypertarget{--doc-rhmr}{}
@@ -381,6 +404,26 @@ To output data use \code{rhcollect(KEY,VALUE)} where KEY and VALUE are R objects
 
 Files written to \code{tmp/} (no leading slash !) e.g \code{pdf("tmp/x.pdf")} will be copied to the output folder.
 
+
+\section{IMPORTANT}
+
+The object passed to rhex has variable called \code{rhipe\_command} which is the
+command of the program that Hadoop sends information to. In case the client
+machine's (machine from which commands are being sent ) R installation is different from the
+tasktrackers' R installation the RHIPE command runner wont be found. For example
+suppose my cluster is linux and my client is OS X , then the \code{rhipe\_command}
+variable will reflect the location of the rhipe command runner on OS X and not
+that of the taskttrackers(Linux) R distribution.
+
+There are two ways to fix this
+a) after \code{z \textless{}- rhmr(...)} change \code{r{[}{[}1{]}{]}\$rhipe\_command} to the
+value it should be on the tasktrackers.
+
+or
+
+b) set the environment variable \code{RHIPECOMMAND} on each of tasktrackers. RHIPE
+java client will read this first before reading the above variable.
+
 \resetcurrentobjects
 \hypertarget{--doc-rhmisc}{}
 
@@ -499,12 +542,18 @@ to split the list into.  The default value of \code{n} is
 \subsection{rhread}
 
 \begin{Verbatim}[commandchars=@\[\]]
-rhread @PYGbe[@textless[]-] @PYGap[function](files,verbose@PYGbe[=]T)
+rhread @PYGbe[@textless[]-] @PYGap[function](files,verbose@PYGbe[=]T,doLocal@PYGbe[=]T)
 \end{Verbatim}
 
 Reads files(s) from \code{files} (which could be a directory). Wildcards allowed.
 
-If \code{verbose} is True, information is displayed (useful when reading many files)
+If \code{verbose} is True, information is displayed (useful when reading many
+files)
+\code{rhread} read sequence files by running a mapreduce   job to convert the
+sequence file to a binary file.
+This is then merged and read into R. If \code{doLocal} is True this mapreduce
+conversion job is a local mapreduce job (which can be slow for lots of part
+files) else a fully distributed job.
 
 
 \subsection{rhmerge}
@@ -760,6 +809,43 @@ Speed?
 
 Similar to Hadoop Streaming. The bottlenecks are writing and reading to STDIN
 pipes and R.
+\begin{enumerate}
+\item {} 
+What can RHIPE do?
+
+\end{enumerate}
+
+Firstly, there are several R packages for parrallel computing. \code{snow},{}`{}`snowfall{}`{}`
+are packages for (mostly) embarrrasingly parallel computation and do not work
+with massive datasets. \code{mapreduce} implements the mapreduce algorithm on a
+single machine(which can be done with RHIPE by using a cluster of size 1).
+
+RHIPE is a wrapper around Hadoop for the R user. So that he/she need not leave
+the R environment for writing, running mapreduce applications and computing wth
+massive datasets.
+\begin{enumerate}
+\item {} 
+The command runner, different client and tasktrackers.
+
+\end{enumerate}
+
+The object passed to rhex has variable called \code{rhipe\_command} which is the
+command of the program that Hadoop sends information to. In case the client
+machine's (machine from which commands are being sent ) R installation is different from the
+tasktrackers' R installation the RHIPE command runner wont be found. For example
+suppose my cluster is linux and my client is OS X , then the \code{rhipe\_command}
+variable will reflect the location of the rhipe command runner on OS X and not
+that of the taskttrackers(Linux) R distribution.
+
+There are two ways to fix this
+a) after \code{z \textless{}- rhmr(...)} change \code{r{[}{[}1{]}{]}\$rhipe\_command} to the
+value it should be on the tasktrackers.
+(in case of \code{rhlapply}, it should be \code{r{[}{[}1{]}{]}{[}{[}1{]}{]}\$rhipe\_command})
+
+or
+
+b) set the environment variable \code{RHIPECOMMAND} on each of tasktrackers. RHIPE
+java client will read this first before reading the above variable.
 
 \resetcurrentobjects
 \hypertarget{--doc-ProtoBuffers}{}

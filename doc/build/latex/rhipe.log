@@ -1,4 +1,4 @@
-This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=pdflatex 2007.5.18)  4 OCT 2009 16:03
+This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=pdflatex 2007.5.18)  12 OCT 2009 12:02
 entering extended mode
  %&-line parsing enabled.
 **rhipe.tex
@@ -820,15 +820,15 @@ LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <9> not available
 (Font)              Font shape `T1/pcr/b/n' tried instead on input line 180.
 [5]
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <12> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 229.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 232.
  [6]
 Chapter 3.
 LaTeX Font Info:    Font shape `T1/pcr/m/it' in size <9> not available
-(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 256.
+(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 279.
 [7
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 305--306
+Underfull \hbox (badness 10000) in paragraph at lines 328--329
 []\T1/ptm/m/n/10 indicates Text For-mat. Use
  []
 
@@ -840,12 +840,12 @@ Chapter 4.
 
 ]
 Chapter 5.
-LaTeX Font Info:    Try loading font information for TS1+ptm on input line 543.
+LaTeX Font Info:    Try loading font information for TS1+ptm on input line 592.
 
 (/usr/local/texlive/2007/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
-Underfull \hbox (badness 10000) in paragraph at lines 569--571
+Underfull \hbox (badness 10000) in paragraph at lines 618--620
 []\T1/ptm/m/n/10 choose the Ama-zon ma-chine in-stance type. For de-tails, go t
 o
  []
@@ -853,7 +853,7 @@ o
 [15] [16]
 Chapter 6.
 LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/pcr/b/n' tried instead on input line 633.
+(Font)              Font shape `T1/pcr/b/n' tried instead on input line 682.
 [17
 
 ] [18]
@@ -865,23 +865,23 @@ Chapter 7.
 ]
 Chapter 8.
 
-Underfull \hbox (badness 6364) in paragraph at lines 769--775
+Underfull \hbox (badness 6364) in paragraph at lines 855--861
 \T1/ptm/m/n/10 The pack-age also in-cludes some mis-cel-la-neous func-tions for
  writ-ing/reading vari-able length en-coded
  []
 
 
-Underfull \hbox (badness 6758) in paragraph at lines 769--775
+Underfull \hbox (badness 6758) in paragraph at lines 855--861
 \T1/ptm/m/n/10 in-te-gers, and Base64 en-cod-ing/decoding re-lated func-tions. 
 The pack-age can be down-loaded from
  []
 
 [21] (./modrhipe.ind) (./rhipe.ind) [22] (./rhipe.aux) ) 
 Here is how much of TeX's memory you used:
- 6614 strings out of 94073
- 86327 string characters out of 1162984
- 151984 words of memory out of 1500000
- 9666 multiletter control sequences out of 10000+50000
+ 6619 strings out of 94073
+ 86379 string characters out of 1162984
+ 151985 words of memory out of 1500000
+ 9667 multiletter control sequences out of 10000+50000
  58724 words of font info for 65 fonts, out of 1200000 for 2000
  646 hyphenation exceptions out of 8191
  34i,12n,45p,305b,451s stack positions out of 5000i,500n,6000p,200000b,5000s
@@ -894,9 +894,9 @@ uhvb8a.pfb></usr/local/texlive/2007/texmf-dist/fonts/type1/urw/helvetic/uhvbo8a
 .pfb></usr/local/texlive/2007/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr
 /local/texlive/2007/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/tex
 live/2007/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on rhipe.pdf (26 pages, 170541 bytes).
+Output written on rhipe.pdf (26 pages, 174927 bytes).
 PDF statistics:
- 352 PDF objects out of 1000 (max. 8388607)
- 87 named destinations out of 1000 (max. 131072)
- 241 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 361 PDF objects out of 1000 (max. 8388607)
+ 91 named destinations out of 1000 (max. 131072)
+ 249 words of extra memory for PDF output out of 10000 (max. 10000000)
 
