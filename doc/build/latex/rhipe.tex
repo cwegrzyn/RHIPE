@@ -10,7 +10,7 @@
 
 
 \title{rhipe Documentation}
-\date{October 12, 2009}
+\date{November 26, 2009}
 \release{0.51}
 \author{Saptarshi Guha}
 \newcommand{\sphinxlogo}{}
@@ -123,7 +123,8 @@ export PKG@_CONFIG@_PATH@PYGbe[=]@$PKG@_CONFIG@_PATH:@$CUSTROOT@PYGbe[/]lib@PYGb
 
 \end{enumerate}
 
-Tested on RHEL Linux, though \emph{may} work on Windows
+Tested on RHEL Linux, Mac OS 10.5.5 (Leopard).
+Does not work on Snow Leopard
 
 
 \section{Installation}
@@ -403,6 +404,11 @@ To output data use \code{rhcollect(KEY,VALUE)} where KEY and VALUE are R objects
 \section{Side Effect files}
 
 Files written to \code{tmp/} (no leading slash !) e.g \code{pdf("tmp/x.pdf")} will be copied to the output folder.
+
+
+\section{Mapreduce Options}
+
+Many mapreduce configuration variables are stored in the environment. To get the value use \code{Sys.getenv()}, e.g in the map stage, to find out the name of the current input file, use \code{Sys.getenv('mapred.input.file')} .
 
 
 \section{IMPORTANT}
