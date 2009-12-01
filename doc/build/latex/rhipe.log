@@ -1,4 +1,4 @@
-This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=pdflatex 2007.5.18)  26 NOV 2009 15:31
+This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=pdflatex 2007.5.18)  30 NOV 2009 14:38
 entering extended mode
  %&-line parsing enabled.
 **rhipe.tex
@@ -865,38 +865,47 @@ Chapter 7.
 ]
 Chapter 8.
 
-Underfull \hbox (badness 6364) in paragraph at lines 861--867
+Underfull \hbox (badness 6364) in paragraph at lines 874--880
 \T1/ptm/m/n/10 The pack-age also in-cludes some mis-cel-la-neous func-tions for
  writ-ing/reading vari-able length en-coded
  []
 
 
-Underfull \hbox (badness 6758) in paragraph at lines 861--867
+Underfull \hbox (badness 6758) in paragraph at lines 874--880
 \T1/ptm/m/n/10 in-te-gers, and Base64 en-cod-ing/decoding re-lated func-tions. 
 The pack-age can be down-loaded from
  []
 
-[21] (./modrhipe.ind) (./rhipe.ind) [22] (./rhipe.aux) ) 
+[21] [22]
+Chapter 9.
+
+Overfull \hbox (7.5307pt too wide) in paragraph at lines 955--956
+[]
+ []
+
+(./modrhipe.ind) (./rhipe.ind) [23
+
+] (./rhipe.aux) ) 
 Here is how much of TeX's memory you used:
- 6621 strings out of 94073
- 86403 string characters out of 1162984
+ 6626 strings out of 94073
+ 86451 string characters out of 1162984
  151986 words of memory out of 1500000
- 9668 multiletter control sequences out of 10000+50000
+ 9669 multiletter control sequences out of 10000+50000
  58724 words of font info for 65 fonts, out of 1200000 for 2000
  646 hyphenation exceptions out of 8191
  34i,12n,45p,305b,451s stack positions out of 5000i,500n,6000p,200000b,5000s
-{/usr/local/texlive/200
-7/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/texlive/2007/texmf-dist/fo
-nts/type1/urw/courier/ucrb8a.pfb></usr/local/texlive/2007/texmf-dist/fonts/type
-1/urw/courier/ucrr8a.pfb></usr/local/texlive/2007/texmf-dist/fonts/type1/urw/co
-urier/ucrro8a.pfb></usr/local/texlive/2007/texmf-dist/fonts/type1/urw/helvetic/
-uhvb8a.pfb></usr/local/texlive/2007/texmf-dist/fonts/type1/urw/helvetic/uhvbo8a
-.pfb></usr/local/texlive/2007/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr
-/local/texlive/2007/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/tex
-live/2007/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on rhipe.pdf (26 pages, 175476 bytes).
+{/usr/local/texlive/2007/texmf-dist/fonts/enc/dvips/base/8r.en
+c}</usr/local/texlive/2007/texmf-dist/fonts/type1/urw/courier/ucrb8a.pfb></usr/
+local/texlive/2007/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/te
+xlive/2007/texmf-dist/fonts/type1/urw/courier/ucrro8a.pfb></usr/local/texlive/2
+007/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2007/tex
+mf-dist/fonts/type1/urw/helvetic/uhvbo8a.pfb></usr/local/texlive/2007/texmf-dis
+t/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2007/texmf-dist/fonts/ty
+pe1/urw/times/utmr8a.pfb></usr/local/texlive/2007/texmf-dist/fonts/type1/urw/ti
+mes/utmri8a.pfb>
+Output written on rhipe.pdf (27 pages, 180157 bytes).
 PDF statistics:
- 366 PDF objects out of 1000 (max. 8388607)
- 92 named destinations out of 1000 (max. 131072)
- 257 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 377 PDF objects out of 1000 (max. 8388607)
+ 96 named destinations out of 1000 (max. 131072)
+ 265 words of extra memory for PDF output out of 10000 (max. 10000000)
 
