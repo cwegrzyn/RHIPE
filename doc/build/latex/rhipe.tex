@@ -10,8 +10,8 @@
 
 
 \title{rhipe Documentation}
-\date{December 10, 2009}
-\release{0.52}
+\date{December 13, 2009}
+\release{0.53}
 \author{Saptarshi Guha}
 \newcommand{\sphinxlogo}{}
 \renewcommand{\releasename}{Release}
@@ -393,7 +393,8 @@ This will also indicate progress.
 \subsection{Counter}
 
 To update the counter C in the group G with a number N, user \code{rhcounter(G,C,N)}
-where C and G are strings and N is a number.
+where C and G are strings and N is a number. However, C and G can be atomic vectors and they will be converted to strings.
+Previously a ``,'' in C or G would upset Hadoop, but not with version 0.52 onwards.
 
 
 \subsection{Output}
@@ -852,19 +853,34 @@ or
 
 b) set the environment variable \code{RHIPECOMMAND} on each of tasktrackers. RHIPE
 java client will read this first before reading the above variable.
+\begin{description}
+\item[for x in spica deneb mimosa adhara castor acrux ;do]
+echo -en `E{[}1;31m'
+echo ``=========='' \$x ``==========''
+tput sgr0
+scp Rhipe\_0.52.tar.gz \$x:/tmp/
+ssh \$x ``. \textasciitilde{}/.bashrc \&\& rm -rf /ln/meraki/custom/lib64/R/library/00LOCK \&\& R CMD INSTALL /tmp/Rhipe\_0.52.tar.gz''
+
+\end{description}
+
+done
 \begin{enumerate}
 \item {} 
 Data types
 
 \end{enumerate}
 
-Stick to vectors of raws, character, logical, integer, complex and reals.
-For atomic vectors, don't use attributes (especially not the names attribute)
-\emph{Stay away} from \code{data.frames}
+Stick to vectors of raws, character, logical, integer, complex and reals.  For
+atomic vectors, don't use attributes (especially not the names attribute) \emph{Stay
+away} from \code{data.frames} (These two(data.frames and named scalar vectors) are
+read and written successfully, but I'm not guaranteeing success)
 
 In lists, the names are preserved.
 
 Try and keep your objects simple (using types even more basic than R types :) ) and even on data sets, you find no object corruption, there can be on large data sets  - ** if you use the advanced types such classes, data.frames etc **
+
+6. Key and Value Object Size : Are there limits?
+Yes, the serialized version of a key and object should be less than 64MB. I can fix this and will in future. For e.g. \code{runif(8e6)} is 61MB. Your keys and values should be less than this.
 
 \resetcurrentobjects
 \hypertarget{--doc-ProtoBuffers}{}
@@ -949,24 +965,20 @@ R CMD INSTALL rprotobuf@_1.1.tar.gz
 
 I have tried to make RHIPE as flexible as possible with regards to data types exchanged. As such the following can be sent
 \begin{itemize}
-\item {} \begin{description}
-\item[atomic vectors without attributes (raw, character, logical, complex, real, integer) (these include NA's)]\begin{itemize}
 \item {} 
-e.g names attribute will be lost
-
-\end{itemize}
-
-\end{description}
+atomic vectors (raw, character, logical, complex, real, integer) (these include NA's)
 
 \item {} 
 lists of the above and lists of lists. Names will be preserved.
 
 \end{itemize}
 
-So \emph{officially} no matrices, data.frames, time series objects etc. If there are needed serialized them using \code{serialize} .
+So \emph{officially} no matrices, data.frames, time series objects etc. If there are needed , serialize them using \code{serialize} .
 
 \emph{Unofficially}, several attributes of are serialized, hence you can send matrices (the dim and  dimnames attribute are involved) will be serialized.
-However, with regards to data.frames the row.names attribute has caused me much grief. Hence, relying on these types can lead to many problems, crashes even.
+However, with regards to data.frames the row.names attribute has caused me much grief. Keep it simple: scalar vectors (use \code{as.vector} to remove attributes) and lists (names are allowed).
+
+I use data.frames too and it works. If you get a crash(error code 139,using version \textgreater{}= 0.53), email me.
 
 If in doubt, serialize.
 
