@@ -10,7 +10,7 @@
 
 
 \title{rhipe Documentation}
-\date{December 13, 2009}
+\date{December 15, 2009}
 \release{0.53}
 \author{Saptarshi Guha}
 \newcommand{\sphinxlogo}{}
@@ -471,7 +471,15 @@ Unserializes a raw object returned from \code{rhsz}
 \section{HDFS Related}
 
 
-\subsection{rhsave}
+\subsection{rhload}
+
+\begin{Verbatim}[commandchars=@\[\]]
+rhload @PYGbe[@textless[]-] @PYGap[function](file,...)
+\end{Verbatim}
+
+Loads an R data set stored on the DFS.
+rhsave
+\textasciicircum{}\textasciicircum{}\textasciicircum{}\textasciicircum{}\textasciicircum{}\textasciicircum{}
 
 \begin{Verbatim}[commandchars=@\[\]]
 rhsave @PYGbe[@textless[]-] @PYGap[function](..., file)
