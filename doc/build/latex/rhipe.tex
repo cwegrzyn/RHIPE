@@ -10,8 +10,8 @@
 
 
 \title{rhipe Documentation}
-\date{December 15, 2009}
-\release{0.53}
+\date{December 26, 2009}
+\release{0.54}
 \author{Saptarshi Guha}
 \newcommand{\sphinxlogo}{}
 \renewcommand{\releasename}{Release}
@@ -277,7 +277,7 @@ can be any R data structure.
 
 \begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=1,stepnumber=1]
 rhmr @PYGbe[@textless[]-] @PYGap[function](map,reduce@PYGbe[=]@PYGaD[NULL],
-         combiner@PYGbe[=]F, @PYGaf[@#CANNOT BE CHANGED]
+         combiner@PYGbe[=]F,
          setup@PYGbe[=]@PYGaD[NULL],
          cleanup@PYGbe[=]@PYGaD[NULL],
          ofolder@PYGbe[=]'',
@@ -308,7 +308,7 @@ Called when all the values have been sent.
 \end{description}
 
 \item[\code{combiner}]
-Uses a combiner if TRUE. If so, then \code{reduce.values} present in the \code{reduce\$reduce} expression will be a \emph{subset} of values.
+Uses a combiner if TRUE. If so, then \code{reduce.values} present in the \code{reduce\$reduce} expression will be a \emph{subset} of values.The reducer algorithm should be able process input emitted from map \emph{or} reduce.
 
 \item[\code{setup}]
 An expression that can be called to setup the environment. Called once for every task.
@@ -336,10 +336,14 @@ is a sequence format. Outputs in this form /can/ be used as an input.
 \item[\code{binary}]
 is a simple binary format consisting of key-length, key data, value-length, value data where the lengths are integers in network order. Though \emph{much} faster than sequence in terms of reading in data, it \emph{cannot} be used an input to a map reduce operation.
 
-\end{description}
+\item[\code{map}]
+\emph{Only as OutputFormat} ! That is, map can only be the second element of \code{inout}. If so, the output part files will be directories, each containing a data and an index file. If the reducer writes the same key as the one received then using the function \code{rhgetkey}, specifying the get and the output folder part files , one can use the output as a hash table (do keep the keys small then). However, if the keys are changed before being written (using rhcollect), the order is lost and even though one can still use the individual part file as a Map file reader, the part file containing the key needs to be known (as opposed to just specifying the directory of part files). To remedy this just run a identity map job converting map input to map output (see \code{rhM2M} and \code{rhS2M}).
+Map Output formats can be used an input format. Use the function \code{rhmap.sq} on a directory of map part files e.g \code{rhmap.sq("/tmp/out/p*)}, this will return a vector of paths pointing to the \emph{data} files in each of the part folders (the folders also contain index files, which can't be used as sequence file input to Hadoop, so these have to be filtered).
 
 \item[\code{shared}]
 A vector of files on the HDFS that will be copied to the working directory of the R program. These files can then be loaded as easily as \code{load(filename)} (removed leading path)
+
+\end{description}
 
 \item[\code{jarfiles}]
 Copy jar files if required. Experimental, probably doesn't work.
@@ -589,6 +593,78 @@ rhreadBin @PYGbe[@textless[]-] @PYGap[function](filename, max@PYGbe[=]as.integer
 
 Reads data outputed in `binary' form. \code{max} is the maximum number to read, -1
 is all. \code{bf} is the read buffer, 0 implies the os specified default \code{BUFSIZ}
+
+
+\section{Map Files}
+
+
+\subsection{rhS2M}
+
+\begin{Verbatim}[commandchars=@\[\]]
+rhS2M @PYGbe[@textless[]-] @PYGap[function] (files, ofile, dolocal @PYGbe[=] T, ignore.stderr @PYGbe[=] F, verbose @PYGbe[=] F)
+\end{Verbatim}
+
+Converts the sequence files specified by \code{files} and places them in
+destination \code{ofile}. If \code{dolocal} is True the conversion is done on the
+local machine, otherwise over the cluster (which is much faster for anything
+greater than hundreds of megabytes). If \code{ignore.stderr} is True, the mapreduce
+output is displayed on the R console. e.g
+
+\begin{Verbatim}[commandchars=@\[\]]
+rhS2m(@PYGaB["]@PYGaB[/tmp/so/p*"],@PYGaB["]@PYGaB[/tmp/so.map"],dolocal@PYGbe[=]F)
+\end{Verbatim}
+
+
+\subsection{rhM2M}
+
+\begin{Verbatim}[commandchars=@\[\]]
+rhM2M @PYGbe[@textless[]-] @PYGap[function] (files, ofile, dolocal @PYGbe[=] T, ignore.stderr @PYGbe[=] F, verbose @PYGbe[=] F)
+\end{Verbatim}
+
+Same as S2M, except it converts a group of Map files to Map files.Why?
+Consider a mapreduce job that outputs modified keys in the reduce part, i.e the
+reduce receives key K0 but emits f(K0), where f(K0) \textless{}\textgreater{} K0, the result of this
+the keys in the reduce output part files wont be sorted even though the K0 are
+sorted.
+
+So, if the reducer emits K0, the output part files constitute a valid collection
+of sorted map files. If the reducer emits f(K0), this does not hold any
+more. Running \code{rhM2M} on this output produces another output in which the keys
+are now sorted (i.e we just run an identity mapreduce emitting f(K0), though now
+the input to the reducers are f(K0)).
+
+To specify the input files, it is not enough to specify the directory
+containing the part files, because the part files are directories which contain
+a sequence file and a non sequence file. Specifying the list of directories to a
+mapreduce job will cause it to fail when it reads the non-map file.
+
+Use \code{rhmap.sqs} .
+
+
+\subsection{rhmap.sqs}
+
+\begin{Verbatim}[commandchars=@\[\]]
+rhmap.sqs @PYGbe[@textless[]-]  @PYGap[function](x)
+\end{Verbatim}
+
+Given a directory containing map part directories, e.g /a/part-r-00000/ etc,
+each part directory contains a data and an index file, this function picks up
+the data files (which are sequence files). This can be used as input to
+mapreduce job with inputformat sequence e.g.
+
+\begin{Verbatim}[commandchars=@\[\]]
+rhmap.sqs(@PYGaB["]@PYGaB[/a/p*"])
+\end{Verbatim}
+
+
+\subsection{rhgetkey}
+
+\begin{Verbatim}[commandchars=@\[\]]
+rhgetkey @PYGbe[@textless[]-] @PYGap[function] (keys, paths, ignore.stderr @PYGbe[=] T, verbose @PYGbe[=] F)
+\end{Verbatim}
+
+Given a list of keys and vector of  map directories (e.g /tmp/ou/mapoutput/p*''),
+returns a list of key,values.
 
 \resetcurrentobjects
 \hypertarget{--doc-ec2}{}
@@ -890,6 +966,13 @@ Try and keep your objects simple (using types even more basic than R types :) ) 
 
 6. Key and Value Object Size : Are there limits?
 Yes, the serialized version of a key and object should be less than 64MB. I can fix this and will in future. For e.g. \code{runif(8e6)} is 61MB. Your keys and values should be less than this.
+\begin{enumerate}
+\item {} 
+\code{java.lang.RuntimeException: RHMRMapRed.waitOutputThreads(): subprocess failed with code 141}
+
+\end{enumerate}
+
+This is because Hadoop broke the read/write pipe with the R code. To view the error, you'll need to go the job tracker website, click on one of the Failed attempts and see the error.
 
 \resetcurrentobjects
 \hypertarget{--doc-ProtoBuffers}{}
