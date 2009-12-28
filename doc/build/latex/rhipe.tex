@@ -660,11 +660,11 @@ rhmap.sqs(@PYGaB["]@PYGaB[/a/p*"])
 \subsection{rhgetkey}
 
 \begin{Verbatim}[commandchars=@\[\]]
-rhgetkey @PYGbe[@textless[]-] @PYGap[function] (keys, paths, ignore.stderr @PYGbe[=] T, verbose @PYGbe[=] F)
+rhgetkey @PYGbe[@textless[]-] @PYGap[function] (keys, paths, sequence@PYGbe[=]@PYGaD[NULL],ignore.stderr @PYGbe[=] T, verbose @PYGbe[=] F)
 \end{Verbatim}
 
 Given a list of keys and vector of  map directories (e.g /tmp/ou/mapoutput/p*''),
-returns a list of key,values.
+returns a list of key,values. If sequence is a string, the output key,values will be written to the sequence files on the DFS(the values will not be read into R)
 
 \resetcurrentobjects
 \hypertarget{--doc-ec2}{}
