@@ -10,7 +10,7 @@
 
 
 \title{rhipe Documentation}
-\date{January 14, 2010}
+\date{February 19, 2010}
 \release{0.54}
 \author{Saptarshi Guha}
 \newcommand{\sphinxlogo}{}
@@ -673,96 +673,114 @@ returns a list of key,values. If sequence is a string, the output key,values wil
 
 \section{Introduction}
 
-There is one 32 bit EC2 AMI with R-2.8, Hadoop 0.21 and the latest RHIPE. \href{http://s3sync.net/wiki}{s3sync} is also present.
-
-The following describes the usage of the EC2 scripts.
+RHIPE also works on EC2 using Cloudera's scripts. Let me demonstrate
 
 
-\section{Usage}
-\begin{itemize}
+\subsection{Download}
+
+The Cloudera scripts can be found at \href{http://archive.cloudera.com/docs/\_getting\_started.html}{http://archive.cloudera.com/docs/\_getting\_started.html}
+
+Follow the instructions to test your working EC2 installation.
+
+
+\subsection{Using RHIPE on EC2}
+\begin{enumerate}
 \item {} 
-Get an Amazon EC2 account and confirm the ability to start and instance from the command line (using ec2-tools).
+You need to create an entry in your \emph{\textasciitilde{}/.hadoop-ec2/ec2-clusters.cfg}, e.g.
 
-\item {} 
-Unzip the rhipe-ec2 distribution (see the downloads page)
+\end{enumerate}
 
-\item {} 
-OPTIONS
-
-\end{itemize}
-
-In \code{bin/hadoop-ec2-env.sh} template there are several options:
-\begin{description}
-\item[AWS\_ACCOUNT\_ID]
-fill this from the Amazon Account Identifiers
-
-\item[AWS\_ACCESS\_KEY\_ID]
-same as above
-
-\item[AWS\_SECRET\_ACCESS\_KEY]
-same as above
-
-\item[R\_USER\_FILE]
-a URL to an R script. This file is executed on machine boot up. Useful to install R packages. Read \code{bin/hadoop-ec2-env.sh.template} for details.
-
-\item[INSTANCE\_TYPE]
-choose the Amazon machine instance type. For details, go to
-\href{http://aws.amazon.com/ec2/instance-types/}{http://aws.amazon.com/ec2/instance-types/}
-
-\end{description}
-\begin{itemize}
-\item {} 
-Save the file as \code{bin/hadoop-ec2-env.sh}
-
-\end{itemize}
-
-
-\section{Some launch commands}
-\begin{itemize}
-\item {} 
-launch
-
-\end{itemize}
-
-\begin{Verbatim}[commandchars=@\[\]]
-bin/hadoop-ec2 launch-cluster clustername number-of-workers
+\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=1,stepnumber=1]
+@PYGbe[@PYGZlb[]]test2@PYGbe[@PYGZrb[]]
+@PYGai[ami]@PYGbe[=]ami-6159bf08 @PYGaE[@# Fedora 32 bit instance]
+@PYGai[instance@_type]@PYGbe[=]c1.medium
+@PYGai[key@_name]@PYGbe[=]saptarshiguha @PYGaE[@#@# Your key name]
+@PYGai[availability@_zone]@PYGbe[=]us-east-1c
+@PYGai[private@_key]@PYGbe[=]PATH@_TO@_PRIVATE@_KEY
+@PYGai[ssh@_options]@PYGbe[=] -i @%@PYGbe[(]private@_key@PYGbe[)]s -o @PYGai[StrictHostKeyChecking]@PYGbe[=]no
 \end{Verbatim}
 
-Replace clustername with the name of the cluster and number-of-workers with the number of workers. Use Elasticfox to check all the instances are running, this can some time.
-\begin{itemize}
+In particular, RHIPE only works with 32/64 bit Fedora instance types, so choose those AMIs.
+\begin{enumerate}
 \item {} 
-login
+Download this file( \href{http://www.stat.purdue.edu/~sguha/rhipe/dn/hadoop-ec2-init-remote.sh}{http://www.stat.purdue.edu/\textasciitilde{}sguha/rhipe/dn/hadoop-ec2-init-remote.sh} ) and replace the file of the same name (it is in the Cloudera distribution). This file contains one extra shell function to install code RHIPE requires: R, Google's protobuf and RHIPE
 
-\end{itemize}
+\item {} 
+Now start your cluster
+
+\end{enumerate}
 
 \begin{Verbatim}[commandchars=@\[\]]
-bin/hadoop-ec2 login clustername
+python hadoop-ec2 launch-cluster --env @PYGai[REPO]@PYGbe[=]testing --env @PYGai[HADOOP@_VERSION]@PYGbe[=]0.20 test2 3
 \end{Verbatim}
-\begin{itemize}
-\item {} 
-terminate
 
-\end{itemize}
+The number (3) must be greater than 1.
+\begin{enumerate}
+\item {} 
+\emph{Wait}, till you it completely finishes booting up (the cloudera scripts tell you the url of the jobtracker). Login to the cluster
+
+\end{enumerate}
 
 \begin{Verbatim}[commandchars=@\[\]]
-bin/hadoop-ec2 terminate-cluster clustername
+python hadoop-ec2 login test2
 \end{Verbatim}
-\begin{itemize}
+\begin{enumerate}
 \item {} 
-You can check the status of jobs at masterip:50030 in your web browser.
+Start \emph{R}, and try the following
 
-\end{itemize}
+\end{enumerate}
 
+\begin{Verbatim}[commandchars=@\[\]]
+library@PYGbe[(]Rhipe@PYGbe[)]
+z @textless[]- rhlapply@PYGbe[(]10,runif@PYGbe[)]
+@PYGaE[@#@# Runs on a local machine(i.e the master)]
+rhex@PYGbe[(]z,changes@PYGbe[=]list@PYGbe[(]mapred.job.tracker@PYGbe[=]@PYGbd['local']@PYGbe[))]
+\end{Verbatim}
 
-\section{Useful tools}
-\begin{description}
-\item[\href{http://www.s3fox.net/}{s3fox}]
-A S3 file browser that works within Firefox.
+\begin{Verbatim}[commandchars=@\[\]]
+library@PYGbe[(]Rhipe@PYGbe[)]
+@PYGaE[@#@# Runs on the cluster]
+z @textless[]- rhlapply@PYGbe[(]10,runif,mapred@PYGbe[=]list@PYGbe[(]@PYGai[LD@_LIBRARY@_PATH]@PYGbe[=]@PYGbd['/usr/local/lib']@PYGbe[))]
+rhex@PYGbe[(]z@PYGbe[)]
+\end{Verbatim}
 
-\item[\href{http://sourceforge.net/projects/elasticfox/}{Elasticfox}]
-EC2 management tools, a Firefox add-on.
+The \emph{LD\_LIBRARY\_PATH} is essential, you need to use it \emph{all} the time on EC2 ( without it Rhipe cannot find the location of the protobuffer library )
 
-\end{description}
+6. Consider the more involved problem of bootstrapping. See this question posed on the
+R-HPC mailing list (\href{http://permalink.gmane.org/gmane.comp.lang.r.hpc/221}{http://permalink.gmane.org/gmane.comp.lang.r.hpc/221}).
+Using Rhipe( chunksize (see the posting) is 1000 per task which results in 100 tasks)
+
+\begin{Verbatim}[commandchars=@\[\],numbers=left,firstnumber=1,stepnumber=1]
+y @textless[]- iris@PYGbe[@PYGZlb[]]which@PYGbe[(]iris@PYGbe[@PYGZlb[]],5@PYGbe[@PYGZrb[]] !@PYGbe[=] @PYGaX["setosa"]@PYGbe[)], c@PYGbe[(]1,5@PYGbe[)@PYGZrb[]]
+rhsave@PYGbe[(]y,file@PYGbe[=]@PYGaX["/tmp/tmp.Rdata"]@PYGbe[)]
+
+@PYGaE[@#@# The function 'f' depends on 'x' so we must save it]
+@PYGaE[@#@# using rhsave and then load it in the setup]
+
+setup @textless[]- expression@PYGbe[({]
+   load@PYGbe[(]@PYGaX["tmp.Rdata"]@PYGbe[)]
+  @PYGbe[})]
+
+f@textless[]- @PYGay[function]@PYGbe[(]i@PYGbe[){]
+   ind @textless[]- sample@PYGbe[(]100, 100, @PYGai[replace]@PYGbe[=]TRUE@PYGbe[)]
+   result1 @textless[]- glm@PYGbe[(]y@PYGbe[@PYGZlb[]]ind,2@PYGbe[@PYGZrb[]]@textasciitilde[]y@PYGbe[@PYGZlb[]]ind,1@PYGbe[@PYGZrb[]], @PYGai[family]@PYGbe[=]binomial@PYGbe[(]logit@PYGbe[))]
+   @PYGay[return]@PYGbe[(]structure@PYGbe[(]coefficients@PYGbe[(]result1@PYGbe[)], @PYGai[names]@PYGbe[=]NULL@PYGbe[))]
+@PYGbe[}]
+
+z @textless[]- rhlapply@PYGbe[(]100000L,f,shared@PYGbe[=]@PYGaX["/tmp/tmp.Rdata"],setup@PYGbe[=]setup,
+             @PYGai[mapred]@PYGbe[=]list@PYGbe[(]mapred.map.tasks@PYGbe[=]100000L/1000
+               ,mapred.reduce.tasks@PYGbe[=]5,LD@_LIBRARY@_PATH@PYGbe[=]@PYGbd['/usr/local/lib']@PYGbe[))]
+
+g @textless[]- rhex@PYGbe[(]z@PYGbe[)]
+g1 @textless[]- @PYGay[do].call@PYGbe[(]@PYGaX["rbind"],lapply@PYGbe[(]g,function@PYGbe[(]r@PYGbe[)] r@PYGbe[@PYGZlb[]@PYGZlb[]]2@PYGbe[@PYGZrb[]@PYGZrb[]))]
+g2 @textless[]- cbind@PYGbe[(]unlist@PYGbe[(]lapply@PYGbe[(]g,function@PYGbe[(]r@PYGbe[)] r@PYGbe[@PYGZlb[]@PYGZlb[]]1@PYGbe[@PYGZrb[]@PYGZrb[]))],g1@PYGbe[)]
+\end{Verbatim}
+
+I used 3 c1.xlarge nodes(each \$0.68/hr). This took 2 minutes and  5 seconds to run and another minute to read the data back in.
+
+On 10 similar nodes, this took 1 minute and 2 seconds. There is a point where it won't become any faster.
+
+On 20 nodes(with \emph{mapred.map.tasks=160}), it takes 52 seconds (probably not worth the extra cost ... )
 
 \resetcurrentobjects
 \hypertarget{--doc-examples}{}
