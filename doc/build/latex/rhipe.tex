@@ -762,11 +762,9 @@ rhex\PYG{o}{(}z,changes\PYG{o}{=}list\PYG{o}{(}mapred.job.tracker\PYG{o}{=}\PYG{
 \begin{Verbatim}[commandchars=\\\{\}]
 library\PYG{o}{(}Rhipe\PYG{o}{)}
 \PYG{c}{@#@# Runs on the cluster}
-z @textless[]- rhlapply\PYG{o}{(}10,runif,mapred\PYG{o}{=}list\PYG{o}{(}\PYG{n+nv}{LD\PYGZus{}LIBRARY\PYGZus{}PATH}\PYG{o}{=}\PYG{l+s+s1}{'/usr/local/lib'}\PYG{o}{)}\PYG{o}{)}
+z @textless[]- rhlapply\PYG{o}{(}10,runif\PYG{o}{)}
 rhex\PYG{o}{(}z\PYG{o}{)}
 \end{Verbatim}
-
-The \emph{LD\_LIBRARY\_PATH} is essential, you need to use it \emph{all} the time on EC2 ( without it Rhipe cannot find the location of the protobuffer library )
 
 6. Consider the more involved problem of bootstrapping. See this question posed on the
 R-HPC mailing list (\href{http://permalink.gmane.org/gmane.comp.lang.r.hpc/221}{http://permalink.gmane.org/gmane.comp.lang.r.hpc/221}).
@@ -791,7 +789,7 @@ f@textless[]- \PYG{k}{function}\PYG{o}{(}i\PYG{o}{)}\PYG{o}{\PYGZob{}}
 
 z @textless[]- rhlapply\PYG{o}{(}100000L,f,shared\PYG{o}{=}\PYG{l+s+s2}{"/tmp/tmp.Rdata"},setup\PYG{o}{=}setup,
              \PYG{n+nv}{mapred}\PYG{o}{=}list\PYG{o}{(}mapred.map.tasks\PYG{o}{=}100000L/1000
-               ,mapred.reduce.tasks\PYG{o}{=}5,LD\PYGZus{}LIBRARY\PYGZus{}PATH\PYG{o}{=}\PYG{l+s+s1}{'/usr/local/lib'}\PYG{o}{)}\PYG{o}{)}
+               ,mapred.reduce.tasks\PYG{o}{=}5\PYG{o}{)}\PYG{o}{)}
 
 g @textless[]- rhex\PYG{o}{(}z\PYG{o}{)}
 g1 @textless[]- \PYG{k}{do}.call\PYG{o}{(}\PYG{l+s+s2}{"rbind"},lapply\PYG{o}{(}g,function\PYG{o}{(}r\PYG{o}{)} r\PYG{o}{[}\PYG{o}{[}2\PYG{o}{]}\PYG{o}{]}\PYG{o}{)}\PYG{o}{)}
