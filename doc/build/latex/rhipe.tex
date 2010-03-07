@@ -10,7 +10,7 @@
 
 
 \title{rhipe Documentation}
-\date{February 27, 2010}
+\date{March 04, 2010}
 \release{0.56}
 \author{Saptarshi Guha}
 \newcommand{\sphinxlogo}{}
@@ -235,6 +235,9 @@ If given the results are written to this folder and not deleted. If not,
 they are written to temporary folder, read back in (assuming \code{readIn}
 is TRUE) and deleted.
 
+\item[\code{N}]
+The number of task to create, i.e the mapred.map.tasks and is passes onto the \code{rhwrite} function
+
 \item[\code{mapred}]
 Options passed onto \code{rhmr}
 
@@ -242,6 +245,20 @@ Options passed onto \code{rhmr}
 And expression that is called before running \code{func}. Called once per
 JVM.
 
+\item[\code{aggr}]
+A function (default is NULL) to aggregate results. If NULL (default), every list element is written to disk.
+This can be difficult to read back into R (especially when one has nearly 1MN trials, R has to combine a list
+of 1MN elements!). \code{aggr} is a function that takes one argument a list of values, each value being the result
+apply the user function to an element of the input list. E.g. if \code{fun} returns a data frame, one could write
+
+\end{description}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+aggr\PYG{o}{=}\PYG{k+kr}{function}\PYG{p}{(}x\PYG{p}{)} do.call\PYG{p}{(}\PYG{l+s}{"}\PYG{l+s}{rbind"}\PYG{p}{,}x\PYG{p}{)}
+
+and the result of rhlapply will be one big data frame.
+\end{Verbatim}
+\begin{description}
 \item[\code{doLocal}]
 Default is \code{F}. Sent to \code{rhread}
 
