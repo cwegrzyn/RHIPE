@@ -28,81 +28,50 @@ import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 public class RHMRMapper extends Mapper<RHBytesWritable,
 				RHBytesWritable,RHBytesWritable,RHBytesWritable>{
     protected static final Log LOG = LogFactory.getLog(RHMRMapper.class.getName());
-    boolean copyFile=false;
-    String getPipeCommand(Configuration cfg) {
-	String str = System.getenv("RHIPECOMMAND");
-	if (str == null) {
-	    str=cfg.get("rhipe_command");
-	    if(str==null) System.err.println("No rhipe_command");
-	}
-	return(str);
-    }
-    
-    boolean getDoPipe() {
-	return true;
-    }
-    
-    public void run(Context context) throws IOException, 
-	InterruptedException {
-	helper = new RHMRHelper("Mapper");
-	setup(context);
-	helper.startOutputThreads(context);
-	while (context.nextKeyValue()) {
-	    map(context.getCurrentKey(), context.getCurrentValue(), context);
-	}
-	cleanup(context);
-    }								  
-								  
-								  
-    public void setup(Context context) {
+    protected static boolean will_copy_file;
+    protected static MapRTunnel rtunnel   = MapRTunnel.getInstance();
+ 
+    public void run(Context context) throws IOException,InterruptedException {
 	Configuration cfg = context.getConfiguration();
 	try{
 	    String mif = ((FileSplit) context.getInputSplit()).getPath().toString();
 	    cfg.set("mapred.input.file",mif);
-	}catch(java.lang.ClassCastException e){
+	}catch(java.lang.ClassCastException e){}
+	will_copy_file=cfg.get("rhipe_copy_file").equals("TRUE")? true: false;
+
+	rtunnel.start_tunnel( cfg );
+	
+	setup(context);
+	
+	while (context.nextKeyValue()) {
+		map(context.getCurrentKey(), context.getCurrentValue(), context);
 	}
-	cfg.set("RHIPEWHAT","0");
-	System.out.println("mapred.input.file == "+ cfg.get("mapred.input.file"));
-	helper.setup(cfg, getPipeCommand(cfg), getDoPipe());
-	copyFile=cfg.get("rhipe_copy_file").equals("TRUE")? true: false;
+	cleanup(context);
+
+	if(will_copy_file) rtunnel.copyFiles(System.getProperty("java.io.tmpdir"));
+    }								  
+								  
+								  
+    public void setup(Context context)  {
 	try{
-	    helper.writeCMD(RHTypes. EVAL_SETUP_MAP);
-	    helper.checkOuterrThreadsThrowable();
-	}catch(IOException e){
-	    e.printStackTrace();
-	    helper.mapRedFinished(context);
-	    throw new RuntimeException(e);
+	    rtunnel.invoke_setup();
+	}catch(RHIPERuntimeException r){
+	    throw new RuntimeException(r.toString());
 	}
     }
 
 
     public void map(RHBytesWritable key, RHBytesWritable value, Context ctx) 
 	throws IOException,InterruptedException {
-	helper.checkOuterrThreadsThrowable();
-	try {
-	    helper.write(key);
-	    helper.write(value);
-	} catch (IOException io) {
-	    LOG.info("QUIIIITING:"+helper.exitval());
-	    io.printStackTrace();
-	    helper.mapRedFinished(ctx);
-	    throw new IOException(io);
-	}
-    }
-
+	rtunnel.send_key_value(key,value)
+	    }
+    
     public void cleanup(Context ctx) {
 	try{
-	    helper.writeCMD(RHTypes. EVAL_CLEANUP_MAP);
-	    helper.writeCMD(RHTypes.EVAL_FLUSH);
-	    helper.checkOuterrThreadsThrowable();
-	    helper.mapRedFinished(ctx);
-	    helper.copyFiles(System.getProperty("java.io.tmpdir"));
-	}catch(IOException e){
-	    e.printStackTrace();
-	    throw new RuntimeException(e);
+	    rtunnel.invoke_cleanup();
+	}catch(RHIPERuntimeException e){
+	    throw new RuntimeException(r.toString());	
 	}
     }
-
-    private RHMRHelper helper;
 }
 	
