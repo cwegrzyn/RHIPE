@@ -57,7 +57,6 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 
 public class RHMR  implements Tool {
-    protected Environment env_;
     protected String[] argv_;
     protected Configuration config_;
     protected Hashtable<String,String> rhoptions_;
@@ -69,78 +68,71 @@ public class RHMR  implements Tool {
     public static void main(String[] args)  {
 	int res;
 	try{
-	    // (new RHMR()).doTest();
-	    // System.exit(0);
 	    RHMR r = new RHMR();
-	    r.setConfig(new Configuration());
-	    res = ToolRunner.run(r.getConfig(), r, args);
+	    r.setConf(new Configuration());
+	    res = ToolRunner.run(r.getConf(), r, args);
 	}catch(Exception ex){
 	    ex.printStackTrace();
 	    res=-2;
 	}
 	System.exit(res);
     }
-
-    public void doTest(){
-	int i;
-	for(i=0;i<1;i++){System.out.println("I="+i);};
-	System.out.println("Last I="+i);
-    }
-
-    public Configuration getConfig(){
+    public Configuration getConf(){
 	return config_;
     }
-    public void setConfig(Configuration c){
+    public void setConf(Configuration c){
 	config_ = c;
     }
-    public void setConf(Configuration c){}
-    protected void init()  {
-	try {
-	    debug_=false;
-	    rhoptions_ = new Hashtable<String,String>();
-	    readParametersFromR(argv_[0]);
-	    env_ = new Environment();
-	    // config_ = new Configuration();
-	    setConf();
-	    job_ = new Job(config_);
-	    setJob();
-
-	    
-	} catch (Exception io) {
-	    io.printStackTrace();
-	    throw new RuntimeException(io);
-	}
-    }
-    
-    public Configuration getConf() {
-	return config_;
-    }
-    
     public int run(String[] args) throws Exception {
 	this.argv_ = args;
 	init();
 	submitAndMonitorJob(argv_[0]);
 	return 1;
     }
+    protected void init()  {
+	try {
+	    debug_=false;
+	    readParametersFromR(argv_[0]);
+	    System.exit(0);
+	    fillInConf();
+	    job_ = new Job(config_);
+	    setJob();
+	} catch (Exception io) {
+	    io.printStackTrace();
+	    throw new RuntimeException(io);
+	}
+    }
+    
+    
+    public void readParametersFromR(String configfile) throws
+	IOException
+    {
+	rhoptions_ = new Hashtable<String,String>();
+	FileInputStream in = new FileInputStream (configfile);
+	REXP lines=REXP.parseFrom(in);
+	REXP names = lines.getAttrValue(0);
+	for(int i=0;i < lines.getStringValueCount();i++){
+	    rhoptions_.put(names.getStringValue(i).getStrval(),lines.getStringValue(i).getStrval());
+	}
+	in.close();
+    }
 
-    public void setConf() throws IOException,URISyntaxException
+    public void fillInConf() throws IOException,URISyntaxException
     {
 	Enumeration keys = rhoptions_.keys();
 	while( keys.hasMoreElements() ) {
 	    String key = (String) keys.nextElement();
 	    String value = (String) rhoptions_.get(key);
 	    config_.set(key,value);
-	    // System.out.println(key+"==="+value);
 	}
 	REXPHelper.setFieldSep( config_.get("mapred.field.separator"," "));
-
+	config_.put("rhipe_job_uuid",java.util.UUID.randomUUID().toString());
 	String[] shared = config_.get("rhipe_shared").split(",");
 	if(shared!=null){
 	    for(String p : shared)
 		if(p.length()>1) DistributedCache.addCacheFile(new URI(p),config_);
 	}
 	DistributedCache.createSymlink(config_);
-
     }
 
     public void setJob() throws ClassNotFoundException,IOException,
@@ -177,11 +169,6 @@ public class RHMR  implements Tool {
 						       .get("rhipe_outputformat_valueclass")));
 		job_.setMapOutputKeyClass(RHBytesWritable.class);
 		job_.setMapOutputValueClass(RHBytesWritable.class);
-// 		job_.setMapOutputKeyClass(Class.forName(rhoptions_
-// 						     .get("map_output_keyclass")));
-// 		job_.setMapOutputValueClass(Class.forName(rhoptions_
-// 						     .get("map_output_valueclass")));
-
 	    } else{
 		job_.setOutputFormatClass(org.apache.hadoop.mapreduce.lib.output.NullOutputFormat.class);
 		job_.setOutputKeyClass(org.apache.hadoop.io.NullWritable.class);
@@ -193,10 +180,7 @@ public class RHMR  implements Tool {
 	job_.setMapperClass(RHMRMapper.class);
 	job_.setReducerClass(RHMRReducer.class);
 	if(rhoptions_.get("rhipe_combiner").equals("TRUE"))
-	    job_.setCombinerClass(RHMRReducer.class);
-
-
-	
+	    job_.setCombinerClass(RHMRReducer.class);	
     }
 
     public int submitAndMonitorJob(String configfile) throws Exception {
@@ -206,12 +190,8 @@ public class RHMR  implements Tool {
 	boolean verb = rhoptions_.get("rhipe_job_verbose").equals("TRUE")
 	    ? true: false;
 	long now = System.currentTimeMillis();
-	// System.err.println("Now="+now);
 	boolean result = job_.waitForCompletion( verb );
 	double tt = (System.currentTimeMillis() - now)/1000.0;
-	// System.err.println("End="+System.currentTimeMillis()+" diff="+tt+"\n");
-
-	//We will overwrite the input configfile
 	FileOutputStream out = new FileOutputStream (configfile);
 	DataOutputStream fout = new DataOutputStream(out);
 	try{
@@ -260,39 +240,4 @@ public class RHMR  implements Tool {
 	return(RObjects.makeList(groupdispname,cn));
     }
 
-    public void readParametersFromR(String configfile) throws
-	IOException
-    {
-	FileInputStream in = new FileInputStream (configfile);
-	DataInputStream fin = new DataInputStream(in);
-	byte[] d;
-	String key,value;
-	int n0 = fin.readInt(),n;
-	for(int i=0;i<n0;i++){
-	    // R Writes Null Terminated Strings(when I dont use char2Raw)
-	    try{
-		n = fin.readInt();
-		d  = new byte[n];
-		fin.readFully(d,0,d.length);
-		key = new String(d);
-		
-		n = fin.readInt();
-		d = new byte[n];
-		fin.readFully(d,0,d.length);
-		value = new String(d);
-		rhoptions_.put(key,value);
-	    }catch(EOFException e){
-		throw new IOException(e);
-	    }
-	}
-	fin.close();	
-	if(debug_){
-	    Enumeration keys = rhoptions_.keys();
-	    while( keys.hasMoreElements() ) {
-		String key0 = (String) keys.nextElement();
-		String value0 = (String) rhoptions_.get(key0);
-		System.out.println(key0+"="+value0);
-	    }
-	}
-    }
 }
