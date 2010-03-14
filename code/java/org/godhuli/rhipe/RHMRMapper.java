@@ -43,6 +43,7 @@ public class RHMRMapper extends Mapper<RHBytesWritable,
 	
 	setup(context);
 	
+	rtunnel.invoke_map();
 	while (context.nextKeyValue()) {
 		map(context.getCurrentKey(), context.getCurrentValue(), context);
 	}
