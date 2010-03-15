@@ -8,7 +8,7 @@ assign("rhipeOptions" ,list(version="0.56") ,envir=.rhipeEnv )
   opts <- get("rhipeOptions",envir=.rhipeEnv)
 
   ## start server
-  opts$jarloc <- list.files(paste(system.file(package="Rhipe"),"java",sep=.Platform$file.sep),pattern="jar$",full=T)
+  opts$jarloc <- list.files(paste(system.file(package="Rhipe2"),"java",sep=.Platform$file.sep),pattern="jar$",full=T)
 ##   cp <- c(list.files(Sys.getenv("HADOOP"),pattern="jar$",full=T),
 ##           list.files(Sys.getenv("HADOOP_LIB"),pattern="jar$",full=T),
 ##           Sys.getenv("HADOOP_CONF_DIR"),

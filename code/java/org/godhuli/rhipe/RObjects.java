@@ -16,7 +16,6 @@ public class RObjects {
 	}
 	return(returnvalue.build());
     }
-
     public static REXP makeStringVector(String s){
 	return makeStringVector(new String[]{s});
     }

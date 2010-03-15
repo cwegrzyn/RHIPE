@@ -357,13 +357,9 @@ rhex <- function (conf,changes)
   }
 
   conffile <- file(zonf,open='wb')
-  writeBin(as.integer(length(lines)),conffile,size=4,endian='big')
-  for(x in names(lines)){
-    writeBin(as.integer(nchar(x)),conffile,size=4,endian='big')
-    writeBin(charToRaw(x), conffile,endian='big')
-    writeBin(as.integer(nchar(lines[[x]])),conffile,size=4,endian='big')
-    writeBin(charToRaw(as.character(lines[[x]])),conffile,endian='big')
-  }
+  a <- as.character(lines);names(a) <- names(lines)
+  b <- rhsz(a)
+  writeBin(b, conffile,endian='big')
   close(conffile)
   
   cmd <- paste("$HADOOP/bin/hadoop jar ", rhoptions()$jarloc, 

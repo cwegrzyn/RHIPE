@@ -126,7 +126,7 @@ public class RHMR  implements Tool {
 	    config_.set(key,value);
 	}
 	REXPHelper.setFieldSep( config_.get("mapred.field.separator"," "));
-	config_.put("rhipe_job_uuid",java.util.UUID.randomUUID().toString());
+	config_.set("rhipe_job_uuid",java.util.UUID.randomUUID().toString());
 	String[] shared = config_.get("rhipe_shared").split(",");
 	if(shared!=null){
 	    for(String p : shared)
