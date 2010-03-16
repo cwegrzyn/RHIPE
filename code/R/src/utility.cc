@@ -1,46 +1,9 @@
 #include "ream.h"
 #include <netinet/in.h>
-#include <google/protobuf/stubs/common.h>
 #include <unistd.h>
 
 const int i___ = 1;
 #define is_bigendian() ( (*(char*)&i___) == 0 )
-
-/***************************************************
- **
- ** Stream Setup
- **
- ***************************************************/
-int setup_stream(Streams *s){
-   if (!(s->BSTDOUT = freopen(NULL, "wb", stdout))){
-    fprintf(stderr,"ERROR: Could not reopen standard output in binary mode");
-    return(-1);
-  }
-  if (!(s->BSTDIN = freopen(NULL, "rb", stdin))){
-    fprintf(stderr,"ERROR: Could not reopen standard input in binary mode");
-    return(-1);
-  }
-  if (!(s->BSTDERR = freopen(NULL, "wr", stderr))){
-    fprintf(stderr,"ERROR: Could not reopen standard error in binary mode");
-    return(-1);
-  }
-  char *buffsizekb;
-  int buffs=1024*10;
-  if ((buffsizekb=getenv("rhipe_stream_buffer")))
-    buffs = (int)strtol(buffsizekb,NULL,10);
-
-#ifndef FILEREADER
-  setvbuf(s->BSTDOUT, 0, _IOFBF , buffs);
-  setvbuf(s->BSTDIN,  0, _IOFBF,  buffs);
-  setvbuf(s->BSTDERR, 0, _IONBF , 0);
-#endif
-  s->NBSTDOUT = fileno(s->BSTDOUT);
-  s->NBSTDIN =  fileno(s->BSTDIN);
-  s->NBSTDERR = fileno(s->BSTDERR);
-  return(0);
-}
-
-
 
 /*************************************
  ** Variable Length Encoding
@@ -81,35 +44,6 @@ uint32_t decodeVIntSize(const int8_t value) {
   return -111 - value;
 }
 
-// void writeVInt64ToFileDescriptor( int64_t  i , int fd) {
-//   int8_t x ;
-//   if (i >= -112 && i <= 127) {
-//     x=(int8_t)i;
-//     writen(fd,&x,sizeof(x));
-//     return;
-//   }
-//   int32_t len = -112;
-//   if (i < 0) {
-//     i ^= -1L; // take one's complement'
-//     len = -120;
-//   }
-//   int64_t tmp = i;
-//   while (tmp != 0) {
-//     tmp = tmp >> 8;
-//     len--;
-//   }
-//   x=(int8_t)len;
-//   writen(fd,&x,sizeof(x));
-//   len = (len < -120) ? -(len + 120) : -(len + 112);
-//   int idx;
-//   for (idx = len; idx != 0; idx--) {
-//     int32_t shiftbits = (idx - 1) * 8;
-//     int64_t mask = 0xFFL << shiftbits;
-//     x = (int8_t)((i & mask) >> shiftbits);
-//     writen(fd,&x,sizeof(x));
-//   }
-// }
-
 void writeVInt64ToFileDescriptor( int64_t  i , FILE* fd) {
   char x ;
   if (i >= -112 && i <= 127) {
@@ -147,26 +81,6 @@ void writeVInt64ToFileDescriptor( int64_t  i , FILE* fd) {
   
 }
 
-// int64_t readVInt64FromFileDescriptor(int fd){
-//   uint8_t  firstByte = 0 ;
-//   Readn(fd,&firstByte,sizeof(uint8_t));
-//   int len = decodeVIntSize((int8_t)firstByte);
-//   if (len == 1) {
-//     return (int8_t)firstByte;
-//   }
-//   int64_t  i = 0;
-//   int32_t idx;
-//   for (idx = 0; idx < len-1; idx++) {
-//     int8_t b;
-//     int32_t x;
-//     Readn(fd,&x,sizeof(b));
-//     b=(int8_t)x;
-//     i = i << 8;
-//     i = i | (b & 0xFF);
-//   }
-//   return  (isNegativeVInt(firstByte) ? (i ^ -1L) : i);
-// }
-
 
 int64_t readVInt64FromFileDescriptor(FILE* fd){
   uint8_t  firstByte = 0 ;
@@ -193,118 +107,6 @@ int64_t readVInt64FromFileDescriptor(FILE* fd){
   // fread(&r,sizeof(uint32_t),1,fd);
   // fromnetwork = reverseUInt(r);
   // return(fromnetwork);
-}
-
-/*****************************
- *
- * Signal Handlers
- * blindly taken from Stevens
- *
- ***************************/
-void sig_chld(int signo)
-{
-        pid_t   pid;
-        int             stat;
-        while ( (pid = waitpid(-1, &stat, WNOHANG)) > 0);
-        return;
-}
-
-Sigfunc *signal(int signo, Sigfunc *func)
-{
-  struct sigaction      act, oact;
-  act.sa_handler = func;
-  sigemptyset(&act.sa_mask);
-  act.sa_flags = 0;
-  if (signo == SIGALRM) {
-#ifdef  SA_INTERRUPT
-    act.sa_flags |= SA_INTERRUPT;       /* SunOS 4.x */
-#endif
-  } else {
-#ifdef  SA_RESTART
-    act.sa_flags |= SA_RESTART;         /* SVR4, 44BSD */
-#endif
-  }
-  if (sigaction(signo, &act, &oact) < 0)
-    return(SIG_ERR);
-  return(oact.sa_handler);
-}
-Sigfunc * Signal(int signo, Sigfunc *func)      /* for our signal() function */
-{
-  Sigfunc *sigfunc;
-  if ( (sigfunc = signal(signo, func)) == SIG_ERR)
-    fprintf(stderr,"signal error");
-  return(sigfunc);
-}
-
-void sigHandler(int i) {
-  pid_t pid;
-  int  stat;
-  // if (i==SIGTERM || i==SIGHUP  || i==SIGINT || i==SIGQUIT)
-  //   __active__=0;
-  while ( (pid = waitpid(-1, &stat, WNOHANG)) > 0);
-  // merror("sighandler: %d\n", i);
-  // return;
-  sleep(10);
-  LOGG(9,"SIGHANDLE %d\n",i);
-  exit(0);
-  // return;
-}
-
-
-/**********************************
- ** Stevens writen, Readn functions
- *********************************/
-
-ssize_t readn(int fd, void *vptr, size_t n)
-{
-  size_t nleft;
-  ssize_t nread;
-  char  *ptr;
-  
-  ptr =(char*) vptr;
-  nleft = n;
-  while (nleft > 0) {
-    if ( (nread = read(fd, ptr, nleft)) < 0) {
-      if (errno == EINTR)
-        nread = 0;              /* and call read() again */
-      else
-        return(-1);
-    } else if (nread == 0)
-      break;                            /* EOF */
-    
-    nleft -= nread;
-    ptr   += nread;
-  }
-  return(n - nleft);            /* return >= 0 */
-}
-
-
-ssize_t Readn(int fd, void *ptr, size_t nbytes)
-{
-  ssize_t n;
-  if ( (n = readn(fd, ptr, nbytes)) < 0)
-    return(-1);
-  else return(n);
-}
-
-ssize_t writen(int fd, const void *vptr, int n)
-{
-  size_t nleft;
-  ssize_t nwritten;
-  const char *ptr;
-  ptr = (const char*)vptr;
-  nleft = n;
-  while (nleft > 0) {
-    if ( (nwritten = write(fd, ptr, nleft)) <= 0) {
-      if (errno == EINTR)
-        nwritten = 0;           /* and call write() again */
-      else
-        return(-1);                     /* error */
-    }
-    nleft -= nwritten;
-    ptr   += nwritten;
-  }
-  return(n);
 }
 
 uint32_t reverseUInt (uint32_t i) {

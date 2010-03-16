@@ -33,16 +33,9 @@ public class RHMRMapper extends Mapper<RHBytesWritable,
 				RHBytesWritable,RHBytesWritable,RHBytesWritable>{
     protected static final Log LOG = LogFactory.getLog(RHMRMapper.class.getName());
     protected static boolean will_copy_file;
-    protected static final Environment env =null;
-    protected static boolean has_r_started;
-    protected static TunnelBase tbase;
     protected volatile Context ctx;
-    static Process tunnel;
-    static DataOutputStream tunOut;
-    static DataInputStream tunIn,tunMsg;
     static RHBytesWritable key,value;
-    static final int  CMDSETUP=-2,CMDMAP=-3, CMDCLEANUP=-4;
-    private static InReader datareader;
+    static RMapAndReduceGateway rg;
 
     public void run(Context context) throws IOException,InterruptedException {
 	Configuration cfg = context.getConfiguration();
@@ -52,11 +45,12 @@ public class RHMRMapper extends Mapper<RHBytesWritable,
 	}catch(java.lang.ClassCastException e){}
 	will_copy_file=cfg.get("rhipe_copy_file").equals("TRUE")? true: false;
 	
-	start_tunnel( context, cfg );
+	String runner = cfg.get("rhipe_command");
+	rg = RMapAndReduceGateway.getInstance(runner);
+	int result = rg.embed(cfg.get("R_HOME"),cfg.get("rhipe_args").split(" "),"");
+	if(result>0) throw new RHIPERuntimeException("Could not load map library:"+result);
 	
 	setup(context);
-	
-	invoke(CMDMAP);
 	while (context.nextKeyValue()) {
 	    map(context.getCurrentKey(), context.getCurrentValue(), context);
 	}
@@ -66,92 +60,13 @@ public class RHMRMapper extends Mapper<RHBytesWritable,
     }								  
 								  
     public void setup(Context context)  throws RHIPERuntimeException{
-	invoke(CMDSETUP);
     }
     public void map(RHBytesWritable key, RHBytesWritable value, Context ctx) 
 	throws IOException,InterruptedException {
-	key.write(tunOut);
-	value.write(tunOut);
     }
 
     public void cleanup(Context ctx)  throws RHIPERuntimeException {
-	invoke(CMDCLEANUP);
     }
-    public void start_tunnel(Context ctx,Configuration cfg) throws RHIPERuntimeException{
-	try{
-	    if(!has_r_started){
-		tbase = new TunnelBase();
-		ProcessBuilder builder = new ProcessBuilder(cfg.get("rhipe_map_engine").split(" "));
-		Environment childEnv = (Environment)(new Environment()).clone();
-		// addJobConfToEnvironment(cfg, childEnv);
-		// builder.environment().putAll(childEnv.toMap());
-		tunnel = builder.start();
-		tunIn  = new DataInputStream(new BufferedInputStream(tunnel.getInputStream(),10*1024));
-		tunOut = new DataOutputStream(new BufferedOutputStream(tunnel.getOutputStream(),10*1024));
-		tunMsg = new DataInputStream(new BufferedInputStream(tunnel.getErrorStream(),10*1024));
-		has_r_started = true;
-		tbase.send_config_to_r(cfg,tunOut);
-	    }
-	    this.ctx = ctx;
-	}catch(IOException e){
-	    throw new RHIPERuntimeException(e.toString());
-	}
-    }
-    public void invoke(int c) throws RHIPERuntimeException {
-	try{
-	    WritableUtils.writeVInt(tunOut,c);
-	}catch(IOException e){
-	    throw new RHIPERuntimeException(e.toString());
-	}
-    }
-
-    private void start_tunIn_reader(){
-	datareader = new InReader();
-	datareader.start();
-    }
-
-    class InReader extends Thread {
-        boolean stop;
-        public InReader(){
-            stop = false;
-        }
-        public void run(){
-            try{
-                key.readFields(tunIn);
-                value.readFields(tunIn);
-                ctx.write(key,value);
-            }catch(IOException e){
-                try{
-                    tunIn.close();
-                }catch(IOException f){}
-                return;
-            }catch(InterruptedException e){
-                try{
-                    tunIn.close();
-                }catch(IOException f){}
-                return;
-            }
-        }
-    }
-   class MsgReader extends Thread {
-        boolean stop;
-        REXP rx;
-        public MsgReader(){
-            stop = false;
-        }
-        public void run(){
-            try{
-                rx = REXP.parseDelimitedFrom(tunMsg);
-                System.out.println(rx);
-            }catch(IOException e){
-                try{
-                    tunMsg.close();
-                }catch(IOException f){}
-                return;
-            }
-        }
-    }
-
 }
 
 	

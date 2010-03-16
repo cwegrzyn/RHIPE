@@ -1,6 +1,7 @@
 #include <iostream>
 #include <rexp.pb.h>
 #include "ream.h"
+#include <jni.h>
 
 using namespace std;
 
@@ -26,6 +27,16 @@ SEXP rexpress(const char* cmd)
 
 // call (void)Rf_PrintValue(robj) in gdb
 
+void jstring2REXP(JNIEnv* env,jbyteArray j,REXP* r){
+  char *data = 0;
+  jint len = (env)->GetArrayLength( j); 
+  data = (char *)malloc(len); 
+
+  (env)->GetByteArrayRegion(j,0,len,(jbyte*) data);
+  r->ParseFromArray(data,(env)->GetArrayLength(j));
+  // std::cout << r->DebugString();
+  free(data);
+}
 
 
 SEXP message2rexp(const REXP& rexp){

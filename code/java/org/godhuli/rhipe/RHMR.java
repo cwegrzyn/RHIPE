@@ -93,7 +93,6 @@ public class RHMR  implements Tool {
 	try {
 	    debug_=false;
 	    readParametersFromR(argv_[0]);
-	    System.exit(0);
 	    fillInConf();
 	    job_ = new Job(config_);
 	    setJob();

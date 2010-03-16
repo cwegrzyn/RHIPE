@@ -21,10 +21,10 @@ assign("rhipeOptions" ,list(version="0.56") ,envir=.rhipeEnv )
   ##$HADOOP should be such that $HADOOP/bin contains the hadoop executable
   if(Sys.getenv("HADOOP")=="") stop("Rhipe requires the HADOOP environment variable to be present")
   if(.Platform$r_arch!="")
-    opts$runner <- list.files(paste(system.file(package="Rhipe"),"libs",.Platform$r_arch,
+    opts$runner <- list.files(paste(system.file(package="Rhipe2"),"libs",.Platform$r_arch,
                                     sep=.Platform$file.sep),pattern="imperious.so",full=T)
   else
-    opts$runner <- list.files(paste(system.file(package="Rhipe"),"libs",
+    opts$runner <- list.files(paste(system.file(package="Rhipe2"),"libs",
                                     sep=.Platform$file.sep),pattern="imperious.so",full=T)
 
   

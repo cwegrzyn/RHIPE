@@ -1,5 +1,6 @@
 #ifndef	__ream_h
 #define	__ream_h
+#include <jni.h>
 
 #include <iostream>
 #include <google/protobuf/stubs/common.h>
@@ -31,42 +32,18 @@
 #include <R_ext/Boolean.h>
 #include <R_ext/Parse.h>
 #include <R_ext/Rdynload.h>
-  
+#include "org_godhuli_rhipe_RMapAndReduceGateway.h"
+
 #define DLEVEL -9
 
-#ifdef FILEREADER
-extern FILE *FILEIN;
-#endif
-
-#ifdef RHIPEDEBUG
-#define LOGG(...) logg(__VA_ARGS__)
-#else
-#define LOGG(...)
-#endif
-
-/* extern void (*ptr_R_ShowMessage)(const char *); */
-/* extern void (*ptr_R_WriteConsole)(const char *, int); */
-/* extern int  (*ptr_R_ReadConsole)(char *, unsigned char *, int, int); */
-/* extern void (*ptr_R_WriteConsoleEx)(const char *, int , int ); */
-/* extern FILE* R_Consolefile; */
-/* extern FILE* R_Outputfile;  */
-extern FILE* LOG;
-extern int _STATE_;
-SEXP rexpress(const char*);
 void rexp2message(REXP *, const SEXP);
 void fill_rexp(REXP *, const SEXP );
 SEXP message2rexp(const REXP&);
-
-
-
-
+void jstring2REXP(JNIEnv* ,jbyteArray ,REXP*);
 
 /*********
  * Utility
  *********/
-/* void CaptureLog(LogLevel , const char* , int ,const string& ) ; */
-/* void CaptureLogInLibrary(LogLevel , const char* , int ,const string& ) ; */
-
 uint32_t nlz(const int64_t);
 uint32_t getVIntSize(const int64_t) ;
 uint32_t isNegativeVInt(const int8_t);
@@ -76,59 +53,9 @@ void writeVInt64ToFileDescriptor( int64_t , FILE* );
 int64_t readVInt64FromFileDescriptor(FILE* );
 int32_t readJavaInt(FILE* );
 
-/************************
- * Signal Handler Related
- ************************/
-typedef void Sigfunc(int);
-Sigfunc *signal(int , Sigfunc *);
-Sigfunc *Signal(int , Sigfunc *);
-void sigHandler(int );
-
-
-/*************
- ** Tests
- ************/
-void doTest_Serialize2String(char *,const int );
-void doTest_Serialize2Char(char *,const int);
-void doTest_Serialize2FD(char *,const int );
-
-
-
-/*****************
- ** File Pointers
- ****************/
-struct Streams {
-  FILE* BSTDERR,*BSTDIN,*BSTDOUT;
-  int NBSTDERR,NBSTDIN,NBSTDOUT;
-};
-extern Streams *CMMNC;
-int setup_stream(Streams *);
-
-
-/*****************
- ** writen,Readn
- ****************/
-ssize_t readn(int , void *, size_t );
-ssize_t Readn(int , void *, size_t);
-ssize_t writen(int , const void *, int );
-void do_unser(void);
-/******************
- ** Map & Reduce
- *****************/
-const int mapper_run2(void);
-const int mapper_run(void);
-const int mapper_setup(void);
-const int reducer_run(void);
-const int reducer_setup(void);
-
 /*****************
  ** Displays
  *****************/
-void Re_ShowMessage(const char*);
-void Re_WriteConsoleEx(const char *, int , int );
-void merror(const char *, ...);
-void mmessage(char *fmt, ...);
-void logg(int , const char *, ...);
 
 /******************
  ** Counter/Collect
@@ -136,17 +63,20 @@ void logg(int , const char *, ...);
 SEXP counter(SEXP );
 SEXP status(SEXP );
 SEXP collect(SEXP ,SEXP );
-SEXP readFromHadoop(const uint32_t,int* );
-SEXP readFromMem(void * ,uint32_t );
-SEXP persUnser(SEXP);
-SEXP dbgstr(SEXP);
 extern  R_CallMethodDef callMethods[];
 
 
+/* Java Helper */
+extern "C" {
+  char *GetStringNativeChars(jstring ) ;
+  int embedR(char *,int ,char **,char*);
+  void exitR(void);
+  int voidevalR(const char* );
+  extern jobject engineObj;
+  extern jclass engineClass;
+  extern JNIEnv *jenv;
+  void Re_ShowMessage(const char*);
+  void Re_WriteConsoleEx(const char *, int , int );
 
-
-
-
-
-
+}
 #endif

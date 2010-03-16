@@ -106,16 +106,17 @@ rhmr <- function(map,reduce=NULL,
       ofolder <- paste(ofolder,"/",sep="")
   }
   lines<- append(lines,list(
-                     R_HOME=R.home()
-                     ,rhipe_map=rawToChar(map.s)
-                     ,rhipe_setup_map=rawToChar(setup.m)
-                     ,rhipe_cleanup_map= rawToChar(cleanup.m)
-                     ,rhipe_cleanup_reduce= rawToChar(cleanup.r)
-                     ,rhipe_setup_reduce= rawToChar(setup.r)
-                     ,rhipe_command=paste(opts$runner,collapse=" ")
-                     ,rhipe_input_folder=paste(ifolder,collapse=",")
-                     ,rhipe_output_folder=paste(ofolder)))
-
+                            R_HOME=R.home()
+                            ,rhipe_map=rawToChar(map.s)
+                            ,rhipe_setup_map=rawToChar(setup.m)
+                            ,rhipe_cleanup_map= rawToChar(cleanup.m)
+                            ,rhipe_cleanup_reduce= rawToChar(cleanup.r)
+                            ,rhipe_setup_reduce= rawToChar(setup.r)
+                            ,rhipe_command=opts$runner[1]
+                            ,rhipe_args=paste(opts$runner[-1],collapse=" ")
+                            ,rhipe_input_folder=paste(ifolder,collapse=",")
+                            ,rhipe_output_folder=paste(ofolder)))
+  
   shared.files <- unlist(as.character(shared))
   if(! all(sapply(shared.files,is.character)))
     stop("shared  must be all characters")

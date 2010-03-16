@@ -11,26 +11,27 @@
   <property name="javac.version" value="1.6"/>
   <property name="javac.args" value=""/>
   <property name="javac.args.warnings" value="-Xlint:unchecked"/>
-
   <property environment="env"/>
   <path id="classpath">
     <fileset dir="./" includes="**/*.jar"/>
-     <fileset dir="${lib.dir}" includes="*.jar"/>
+    <fileset dir="${lib.dir}" includes="*.jar"/>
     <fileset dir="${env.HADOOP}" includes="*.jar"/>
     <fileset dir="${env.HADOOP}/lib/" includes="**/*.jar"/>
   </path>
   <target name="clean">
     <delete dir="${build.dir}"/>
   </target>
-
-  <target name="proto">
-     <exec executable="protoc">
-     <arg value="--proto_path=${R.dir}/src/"/>
-     <arg value="--java_out=." />
-     <arg value="${R.dir}/src/rexp.proto"/>
-  </exec>
+  <target name="native" depends="compile" >
+  	<javah
+  	  classpath="${classes.dir}:${env.HADOOP}/hadoop-0.20.0-core.jar"
+  	  destdir="${R.dir}/src/"
+  	  force="yes"
+  	  verbose="yes"
+  	  >
+  	  <class name="org.godhuli.rhipe.RMapAndReduceGateway" />
+  	</javah>
   </target>
-
+	
   <target name="compile">
   <delete file="${ant.project.name}.jar"/>
     <mkdir dir="${classes.dir}"/>
@@ -70,7 +71,7 @@
   </target>
 
   <target name="main-clean" depends="clean,jar"/>
-  <target name="main" depends="jar,cpy"/>
+  <target name="main" depends="jar,native,cpy"/>
 </project>
 
 
