@@ -1,8 +1,7 @@
-MYCXXFLAGS+= -I. -g  -DHAVE_UINTPTR_T  `pkg-config --cflags protobuf` -Wall
-# 
+MYCXXFLAGS+= -I. -g  -DHAVE_UINTPTR_T  `pkg-config --cflags protobuf` -Wall  @JAVA_CPPFLAGS@
 PKG_LIBS+= `pkg-config --libs protobuf` 
-
-# RHOME=`echo "cat(Sys.getenv('R_HOME'))" | R --slave `
+PKG_LIBS+=@JAVA_LIBS@
+JAVA_HOME=@JAVA_HOME@
 
 ##RHOME is only set when this run from R
 ##otherwise I have to set it
@@ -11,25 +10,7 @@ RINC=`R CMD config --cppflags`
 RLIB=-fpic `R CMD config --ldflags`
 .PHONY: all cpy
 
-all: $(SHLIB) app
-
-# rexp.pb.o: rexp.pb.cc
-# 	 $(CXX) ${RINC} ${RLIB} $(MYCXXFLAGS) -c $< -o $@
-# message.o: message.cc
-# 	 $(CXX) ${RINC} ${RLIB} $(MYCXXFLAGS) -c $< -o $@
-# utility.o: utility.cc
-# 	 $(CXX) ${RINC} ${RLIB} $(MYCXXFLAGS) -c $< -o $@
-# display.o: display.cc
-# 	 $(CXX) ${RINC} ${RLIB} $(MYCXXFLAGS) -c $< -o $@
-# reducer.o: reducer.cc
-# 	 $(CXX) ${RINC} ${RLIB} $(MYCXXFLAGS) -c $< -o $@
-# mapper.o: mapper.cc
-# 	 $(CXX) ${RINC} ${RLIB} $(MYCXXFLAGS) -c $< -o $@
-# main.o: main.cc
-# 	 $(CXX) ${RINC} ${RLIB} $(MYCXXFLAGS) -c $< -o $@
-# rhooks.o: rhooks.cc
-# 	 $(CXX) ${RINC} ${RLIB} $(MYCXXFLAGS) -c $< -o $@
-
+all: $(SHLIB) mapp
 
 rexp.pb.o: rexp.pb.cc
 	 $(CXX) $(ALL_CPPFLAGS) $(ALL_CXXFLAGS) $(MYCXXFLAGS) -c $< -o $@
@@ -37,25 +18,23 @@ message.o: message.cc
 	 $(CXX) $(ALL_CPPFLAGS) $(ALL_CXXFLAGS) $(MYCXXFLAGS) -c $< -o $@
 utility.o: utility.cc
 	 $(CXX) $(ALL_CPPFLAGS) $(ALL_CXXFLAGS) $(MYCXXFLAGS) -c $< -o $@
-display.o: display.cc
+# display.o: display.cc
+# 	 $(CXX) $(ALL_CPPFLAGS) $(ALL_CXXFLAGS) $(MYCXXFLAGS) -c $< -o $@
+embed.o: embed.cc
 	 $(CXX) $(ALL_CPPFLAGS) $(ALL_CXXFLAGS) $(MYCXXFLAGS) -c $< -o $@
-reducer.o: reducer.cc
+jni_functions.o: jni_functions.cc
 	 $(CXX) $(ALL_CPPFLAGS) $(ALL_CXXFLAGS) $(MYCXXFLAGS) -c $< -o $@
-mapper.o: mapper.cc
-	 $(CXX) $(ALL_CPPFLAGS) $(ALL_CXXFLAGS) $(MYCXXFLAGS) -c $< -o $@
-main.o: main.cc
-	 $(CXX) $(ALL_CPPFLAGS) $(ALL_CXXFLAGS) $(MYCXXFLAGS) -c $< -o $@
+
 rhooks.o: rhooks.cc
 	 $(CXX) $(ALL_CPPFLAGS) $(ALL_CXXFLAGS) $(MYCXXFLAGS) -c $< -o $@
 
-app:  rexp.pb.o message.o utility.o display.o reducer.o mapper.o main.o
-	$(CXX)   ${MYCXXFLAGS} ${PKG_LIBS} ${RINC} ${RLIB} $^ -o imperious.so
-
+mapp:  rexp.pb.o message.o utility.o  embed.o  jni_functions.o
+	$(CXX) -static -Wl,-soname,imperious.so  -o imperious.so  ${MYCXXFLAGS} ${PKG_LIBS} ${RINC} ${RLIB} $^ 
 
 
 
 clean:
-	rm -rf *.so *.o
+	rm *.so *.o
 
 
 
