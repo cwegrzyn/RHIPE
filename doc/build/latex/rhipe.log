@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009) (format=pdflatex 2009.11.7)  4 MAR 2010 13:44
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009) (format=pdflatex 2009.11.7)  20 MAR 2010 11:34
 entering extended mode
  %&-line parsing enabled.
 **rhipe.tex
@@ -980,7 +980,7 @@ mf-dist/fonts/type1/urw/helvetic/uhvbo8a.pfb></usr/local/texlive/2009/texmf-dis
 t/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2009/texmf-dist/fonts/ty
 pe1/urw/times/utmr8a.pfb></usr/local/texlive/2009/texmf-dist/fonts/type1/urw/ti
 mes/utmri8a.pfb>
-Output written on rhipe.pdf (27 pages, 192690 bytes).
+Output written on rhipe.pdf (27 pages, 192608 bytes).
 PDF statistics:
  376 PDF objects out of 1000 (max. 8388607)
  106 named destinations out of 1000 (max. 500000)
