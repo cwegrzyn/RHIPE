@@ -10,8 +10,8 @@
 
 
 \title{rhipe Documentation}
-\date{March 20, 2010}
-\release{0.57}
+\date{April 15, 2010}
+\release{0.58}
 \author{Saptarshi Guha}
 \newcommand{\sphinxlogo}{}
 \renewcommand{\releasename}{Release}
@@ -570,10 +570,10 @@ OVERWRITES!
 \subsection{rhls}
 
 \begin{Verbatim}[commandchars=\\\{\}]
-rhls \PYG{o}{@textless[]-} \PYG{k+kr}{function}\PYG{p}{(}dir\PYG{p}{)}
+rhls \PYG{o}{@textless[]-} \PYG{k+kr}{function}\PYG{p}{(}dir\PYG{p}{,}recur\PYG{o}{=}\PYG{k+kc}{FALSE}\PYG{p}{)}
 \end{Verbatim}
 
-Lists the path at \code{dir}. Wildcards allowed.
+Lists the path at \code{dir}. Wildcards allowed. Use \code{recur} (FALSE/TRUE) to not recurse or to recurse.
 
 
 \subsection{rhdel}
@@ -599,7 +599,7 @@ to split the list into.  The default value of \code{n} is
 \subsection{rhread}
 
 \begin{Verbatim}[commandchars=\\\{\}]
-rhread \PYG{o}{@textless[]-} \PYG{k+kr}{function}\PYG{p}{(}files\PYG{p}{,}verbose\PYG{o}{=}\PYG{k+kVariable}{T}\PYG{p}{,}doLocal\PYG{o}{=}\PYG{k+kVariable}{T}\PYG{p}{)}
+rhread \PYG{o}{@textless[]-} \PYG{k+kr}{function}\PYG{p}{(}files\PYG{p}{,}max\PYG{o}{=}\PYG{l+m}{-1}\PYG{p}{,}type\PYG{o}{=}\PYG{l+s}{"}\PYG{l+s}{sequence"}\PYG{p}{,}verbose\PYG{o}{=}\PYG{k+kVariable}{T}\PYG{p}{,}doLocal\PYG{o}{=}\PYG{k+kVariable}{T}\PYG{p}{)}
 \end{Verbatim}
 
 Reads files(s) from \code{files} (which could be a directory). Wildcards allowed.
@@ -611,6 +611,10 @@ sequence file to a binary file.
 This is then merged and read into R. If \code{doLocal} is True this mapreduce
 conversion job is a local mapreduce job (which can be slow for lots of part
 files) else a fully distributed job.
+
+If \code{max} is positive, \code{max} key-value pairs will be read.
+
+Set \code{type} to ``map'' if the directory \code{files} contains map folders.
 
 
 \subsection{rhmerge}
