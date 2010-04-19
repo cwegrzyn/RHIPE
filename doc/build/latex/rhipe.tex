@@ -10,8 +10,8 @@
 
 
 \title{rhipe Documentation}
-\date{April 15, 2010}
-\release{0.58}
+\date{April 19, 2010}
+\release{0.59}
 \author{Saptarshi Guha}
 \newcommand{\sphinxlogo}{}
 \renewcommand{\releasename}{Release}
@@ -599,18 +599,13 @@ to split the list into.  The default value of \code{n} is
 \subsection{rhread}
 
 \begin{Verbatim}[commandchars=\\\{\}]
-rhread \PYG{o}{@textless[]-} \PYG{k+kr}{function}\PYG{p}{(}files\PYG{p}{,}max\PYG{o}{=}\PYG{l+m}{-1}\PYG{p}{,}type\PYG{o}{=}\PYG{l+s}{"}\PYG{l+s}{sequence"}\PYG{p}{,}verbose\PYG{o}{=}\PYG{k+kVariable}{T}\PYG{p}{,}doLocal\PYG{o}{=}\PYG{k+kVariable}{T}\PYG{p}{)}
+rhread \PYG{o}{@textless[]-} \PYG{k+kr}{function}\PYG{p}{(}files\PYG{p}{,}max\PYG{o}{=}\PYG{l+m}{-1}\PYG{p}{,}type\PYG{o}{=}\PYG{l+s}{"}\PYG{l+s}{sequence"}\PYG{p}{,}verbose\PYG{o}{=}\PYG{k+kVariable}{T}\PYG{p}{)}
 \end{Verbatim}
 
 Reads files(s) from \code{files} (which could be a directory). Wildcards allowed.
 
 If \code{verbose} is True, information is displayed (useful when reading many
 files)
-\code{rhread} read sequence files by running a mapreduce   job to convert the
-sequence file to a binary file.
-This is then merged and read into R. If \code{doLocal} is True this mapreduce
-conversion job is a local mapreduce job (which can be slow for lots of part
-files) else a fully distributed job.
 
 If \code{max} is positive, \code{max} key-value pairs will be read.
 
@@ -682,30 +677,15 @@ mapreduce job will cause it to fail when it reads the non-map file.
 Use \code{rhmap.sqs} .
 
 
-\subsection{rhmap.sqs}
-
-\begin{Verbatim}[commandchars=\\\{\}]
-rhmap.sqs \PYG{o}{@textless[]-}  \PYG{k+kr}{function}\PYG{p}{(}x\PYG{p}{)}
-\end{Verbatim}
-
-Given a directory containing map part directories, e.g /a/part-r-00000/ etc,
-each part directory contains a data and an index file, this function picks up
-the data files (which are sequence files). This can be used as input to
-mapreduce job with inputformat sequence e.g.
-
-\begin{Verbatim}[commandchars=\\\{\}]
-rhmap.sqs\PYG{p}{(}\PYG{l+s}{"}\PYG{l+s}{/a/p*"}\PYG{p}{)}
-\end{Verbatim}
-
-
 \subsection{rhgetkey}
 
 \begin{Verbatim}[commandchars=\\\{\}]
-rhgetkey \PYG{o}{@textless[]-} \PYG{k+kr}{function} \PYG{p}{(}keys\PYG{p}{,} paths\PYG{p}{,} sequence\PYG{o}{=}\PYG{k+kc}{NULL}\PYG{p}{,}ignore.stderr \PYG{o}{=} \PYG{k+kVariable}{T}\PYG{p}{,} verbose \PYG{o}{=} \PYG{k+kVariable}{F}\PYG{p}{)}
+rhgetkey \PYG{o}{@textless[]-} \PYG{k+kr}{function} \PYG{p}{(}keys\PYG{p}{,} paths\PYG{p}{,} sequence\PYG{o}{=}\PYG{k+kc}{NULL}\PYG{p}{,}skip\PYG{o}{=}\PYG{l+m}{0}\PYG{p}{,}ignore.stderr \PYG{o}{=} \PYG{k+kVariable}{T}\PYG{p}{,} verbose \PYG{o}{=} \PYG{k+kVariable}{F}\PYG{p}{)}
 \end{Verbatim}
 
 Given a list of keys and vector of  map directories (e.g /tmp/ou/mapoutput/p*''),
-returns a list of key,values. If sequence is a string, the output key,values will be written to the sequence files on the DFS(the values will not be read into R)
+returns a list of key,values. If sequence is a string, the output key,values will be written to the sequence files on the DFS(the values will not be read into R).
+Set skip to larger(integr) values to prevent reading in all keys of the table - slower to find your key, but can search a much large database.
 
 \resetcurrentobjects
 \hypertarget{--doc-ec2}{}
