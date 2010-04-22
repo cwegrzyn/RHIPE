@@ -10,7 +10,7 @@
 
 
 \title{rhipe Documentation}
-\date{April 19, 2010}
+\date{April 22, 2010}
 \release{0.59}
 \author{Saptarshi Guha}
 \newcommand{\sphinxlogo}{}
@@ -860,7 +860,7 @@ h\PYG{o}{=}rhlapply\PYG{p}{(}length\PYG{p}{(}simlist\PYG{p}{)}
     load\PYG{p}{(}\PYG{l+s}{"}\PYG{l+s}{session.Rdata"}\PYG{p}{)}
   \PYG{p}{\PYGZcb{}}\PYG{p}{)}\PYG{p}{,}
   hadoop\PYG{o}{=}list\PYG{p}{(}mapred.map.tasks\PYG{o}{=}\PYG{l+m}{1000}\PYG{p}{)}\PYG{p}{,}
-  shared.files\PYG{o}{=}\PYG{p}{(}\PYG{l+s}{"}\PYG{l+s}{/tmp/session.Rdata"}\PYG{p}{)}\PYG{p}{)}
+  shared\PYG{o}{=}\PYG{p}{(}\PYG{l+s}{"}\PYG{l+s}{/tmp/session.Rdata"}\PYG{p}{)}\PYG{p}{)} \PYG{c+c1}{@#@#session.Rdata created by rhsave(..., file="/tmp/session.Rdata")}
 \end{Verbatim}
 
 Here \code{session.Rdata} is copied from HDFS to local temporary directories (making for faster reads). This
