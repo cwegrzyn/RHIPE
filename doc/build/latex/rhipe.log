@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009) (format=pdflatex 2009.11.7)  23 APR 2010 13:04
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009) (format=pdflatex 2009.11.7)  6 MAY 2010 21:32
 entering extended mode
  %&-line parsing enabled.
 **rhipe.tex
@@ -908,24 +908,24 @@ Chapter 4.
 [11] [12] [13] [14]
 Chapter 5.
 LaTeX Font Info:    Font shape `T1/pcr/m/it' in size <9> not available
-(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 717.
+(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 735.
 [15
 
 ] [16]
 Chapter 6.
 LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/pcr/b/n' tried instead on input line 812.
+(Font)              Font shape `T1/pcr/b/n' tried instead on input line 830.
 [17
 
 ] [18]
 Chapter 7.
 
-Underfull \hbox (badness 10000) in paragraph at lines 981--986
+Underfull \hbox (badness 10000) in paragraph at lines 999--1004
 []\T1/ptm/m/n/10 echo -en `E[1;31m' echo ``=========='' $x
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 981--986
+Underfull \hbox (badness 10000) in paragraph at lines 999--1004
 \T1/ptm/m/n/10 ``=========='' tput sgr0 scp Rhipe_0.52.tar.gz $x:/tmp/ ssh $x `
 `. ~/.bashrc && rm -rf
  []
@@ -933,7 +933,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 981--986
 [19
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 1009--1010
+Underfull \hbox (badness 10000) in paragraph at lines 1027--1028
 []\T1/pcr/m/n/10 java.lang.RuntimeException: RHMRMapRed.waitOutputThreads(): su
 bprocess
  []
@@ -941,18 +941,18 @@ bprocess
 [20]
 Chapter 8.
 
-Underfull \hbox (badness 6364) in paragraph at lines 1020--1026
+Underfull \hbox (badness 6364) in paragraph at lines 1038--1044
 \T1/ptm/m/n/10 The pack-age also in-cludes some mis-cel-la-neous func-tions for
  writ-ing/reading vari-able length en-coded
  []
 
 
-Underfull \hbox (badness 6758) in paragraph at lines 1020--1026
+Underfull \hbox (badness 6758) in paragraph at lines 1038--1044
 \T1/ptm/m/n/10 in-te-gers, and Base64 en-cod-ing/decoding re-lated func-tions. 
 The pack-age can be down-loaded from
  []
 
-LaTeX Font Info:    Try loading font information for TS1+ptm on input line 1044
+LaTeX Font Info:    Try loading font information for TS1+ptm on input line 1062
 .
 (/usr/local/texlive/2009/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
@@ -964,9 +964,9 @@ Chapter 9.
 
 ] (./rhipe.aux) ) 
 Here is how much of TeX's memory you used:
- 8023 strings out of 493848
- 109376 string characters out of 3149207
- 194433 words of memory out of 3000000
+ 8025 strings out of 493848
+ 109410 string characters out of 3149207
+ 194431 words of memory out of 3000000
  11004 multiletter control sequences out of 15000+200000
  58724 words of font info for 65 fonts, out of 3000000 for 9000
  715 hyphenation exceptions out of 8191
@@ -980,9 +980,9 @@ mf-dist/fonts/type1/urw/helvetic/uhvbo8a.pfb></usr/local/texlive/2009/texmf-dis
 t/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2009/texmf-dist/fonts/ty
 pe1/urw/times/utmr8a.pfb></usr/local/texlive/2009/texmf-dist/fonts/type1/urw/ti
 mes/utmri8a.pfb>
-Output written on rhipe.pdf (27 pages, 194028 bytes).
+Output written on rhipe.pdf (27 pages, 194587 bytes).
 PDF statistics:
- 375 PDF objects out of 1000 (max. 8388607)
- 105 named destinations out of 1000 (max. 500000)
+ 377 PDF objects out of 1000 (max. 8388607)
+ 107 named destinations out of 1000 (max. 500000)
  233 words of extra memory for PDF output out of 10000 (max. 10000000)
 

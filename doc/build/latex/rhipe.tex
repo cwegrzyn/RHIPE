@@ -10,7 +10,7 @@
 
 
 \title{rhipe Documentation}
-\date{April 23, 2010}
+\date{May 06, 2010}
 \release{0.59}
 \author{Saptarshi Guha}
 \newcommand{\sphinxlogo}{}
@@ -538,6 +538,24 @@ rhsave.image \PYG{o}{@textless[]-} \PYG{k+kr}{function}\PYG{p}{(}\PYG{l+m}{.}\PY
 \end{Verbatim}
 
 Same as R's \code{save.image}, except that the file goes to the HDFS.
+
+
+\subsection{rhcp}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+rhcp \PYG{o}{@textless[]-} \PYG{k+kr}{function}\PYG{p}{(}ifile\PYG{p}{,}ofile\PYG{p}{)}
+\end{Verbatim}
+
+Copies a \code{ifile} to \code{ofile} on the HDFS, i.e. both files must be present on the HDFS.
+
+
+\subsection{rhmv}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+rhmv \PYG{o}{@textless[]-} \PYG{k+kr}{function}\PYG{p}{(}ifile\PYG{p}{,}ofile\PYG{p}{)}
+\end{Verbatim}
+
+Moves \code{ifile} to \code{ofile} on the HDFS (and deletes \code{ifile}).
 
 
 \subsection{rhput}
