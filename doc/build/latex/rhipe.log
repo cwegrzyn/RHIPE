@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009) (format=pdflatex 2009.11.7)  6 MAY 2010 21:32
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009) (format=pdflatex 2009.11.7)  28 MAY 2010 17:21
 entering extended mode
  %&-line parsing enabled.
 **rhipe.tex
@@ -905,72 +905,72 @@ Underfull \hbox (badness 10000) in paragraph at lines 367--368
 
 ]
 Chapter 4.
-[11] [12] [13] [14]
+[11] [12] [13] [14] [15] [16
+
+]
 Chapter 5.
 LaTeX Font Info:    Font shape `T1/pcr/m/it' in size <9> not available
-(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 735.
-[15
-
-] [16]
+(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 790.
+[17] [18]
 Chapter 6.
 LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/pcr/b/n' tried instead on input line 830.
-[17
+(Font)              Font shape `T1/pcr/b/n' tried instead on input line 885.
+[19
 
-] [18]
+] [20]
 Chapter 7.
 
-Underfull \hbox (badness 10000) in paragraph at lines 999--1004
+Underfull \hbox (badness 10000) in paragraph at lines 1054--1059
 []\T1/ptm/m/n/10 echo -en `E[1;31m' echo ``=========='' $x
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 999--1004
+Underfull \hbox (badness 10000) in paragraph at lines 1054--1059
 \T1/ptm/m/n/10 ``=========='' tput sgr0 scp Rhipe_0.52.tar.gz $x:/tmp/ ssh $x `
 `. ~/.bashrc && rm -rf
  []
 
-[19
+[21
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 1027--1028
+Underfull \hbox (badness 10000) in paragraph at lines 1082--1083
 []\T1/pcr/m/n/10 java.lang.RuntimeException: RHMRMapRed.waitOutputThreads(): su
 bprocess
  []
 
-[20]
+[22]
 Chapter 8.
 
-Underfull \hbox (badness 6364) in paragraph at lines 1038--1044
+Underfull \hbox (badness 6364) in paragraph at lines 1093--1099
 \T1/ptm/m/n/10 The pack-age also in-cludes some mis-cel-la-neous func-tions for
  writ-ing/reading vari-able length en-coded
  []
 
 
-Underfull \hbox (badness 6758) in paragraph at lines 1038--1044
+Underfull \hbox (badness 6758) in paragraph at lines 1093--1099
 \T1/ptm/m/n/10 in-te-gers, and Base64 en-cod-ing/decoding re-lated func-tions. 
 The pack-age can be down-loaded from
  []
 
-LaTeX Font Info:    Try loading font information for TS1+ptm on input line 1062
+LaTeX Font Info:    Try loading font information for TS1+ptm on input line 1117
 .
 (/usr/local/texlive/2009/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
-) [21
+) [23
 
-] [22]
+] [24]
 Chapter 9.
-(./modrhipe.ind) (./rhipe.ind) [23
+(./modrhipe.ind) (./rhipe.ind) [25
 
 ] (./rhipe.aux) ) 
 Here is how much of TeX's memory you used:
- 8025 strings out of 493848
- 109410 string characters out of 3149207
+ 8033 strings out of 493848
+ 109512 string characters out of 3149207
  194431 words of memory out of 3000000
- 11004 multiletter control sequences out of 15000+200000
+ 11005 multiletter control sequences out of 15000+200000
  58724 words of font info for 65 fonts, out of 3000000 for 9000
  715 hyphenation exceptions out of 8191
- 45i,12n,45p,828b,393s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 45i,12n,49p,828b,393s stack positions out of 5000i,500n,10000p,200000b,50000s
 {/usr/local/texlive/2009/texmf-dist/fonts/enc/dvips/base/8r.en
 c}</usr/local/texlive/2009/texmf-dist/fonts/type1/urw/courier/ucrb8a.pfb></usr/
 local/texlive/2009/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/te
@@ -980,9 +980,9 @@ mf-dist/fonts/type1/urw/helvetic/uhvbo8a.pfb></usr/local/texlive/2009/texmf-dis
 t/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2009/texmf-dist/fonts/ty
 pe1/urw/times/utmr8a.pfb></usr/local/texlive/2009/texmf-dist/fonts/type1/urw/ti
 mes/utmri8a.pfb>
-Output written on rhipe.pdf (27 pages, 194587 bytes).
+Output written on rhipe.pdf (29 pages, 198632 bytes).
 PDF statistics:
- 377 PDF objects out of 1000 (max. 8388607)
- 107 named destinations out of 1000 (max. 500000)
- 233 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 396 PDF objects out of 1000 (max. 8388607)
+ 114 named destinations out of 1000 (max. 500000)
+ 241 words of extra memory for PDF output out of 10000 (max. 10000000)
 

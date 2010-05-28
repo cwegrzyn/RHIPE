@@ -10,8 +10,8 @@
 
 
 \title{rhipe Documentation}
-\date{May 06, 2010}
-\release{0.59}
+\date{May 28, 2010}
+\release{0.60}
 \author{Saptarshi Guha}
 \newcommand{\sphinxlogo}{}
 \renewcommand{\releasename}{Release}
@@ -482,6 +482,61 @@ java client will read this first before reading the above variable.
 
 This is a list of supporting functions for reading, writing sequence files and
 manipulating files on the Hadoop Distributed File System (HDFS).
+
+
+\section{Running Mapreduce}
+
+
+\subsection{rhex}
+
+Once an object is created using \code{rhmr} and \code{rhlapply}, it must be sent to
+the Hadoop system. The function \code{rhex} does this
+
+\begin{Verbatim}[commandchars=\\\{\}]
+rhex \PYG{o}{@textless[]-} \PYG{k+kr}{function}\PYG{p}{(}o\PYG{p}{,} async\PYG{o}{=}\PYG{k+kc}{FALSE}\PYG{p}{,} mapred\PYG{p}{)}
+\end{Verbatim}
+
+Where \code{o} is the object that \code{rhmr} or \code{rhlapply} returns. \code{mapred} is a
+list of the same shape as in \code{rhmr} and \code{rhlapply}. Values in this over-ride
+those passed in \code{rhmr{}`{}`(and {}`{}`rhlapply}). If \code{async} is FALSE, the function
+returns when the job has finished running. The value returned is a list of
+Hadoop Counters (e.g bytes sent, bytes written, time taken etc).
+
+If \code{async} is TRUE, the function returns immediately. In this case, the value
+returned can be printed (i.e just type the returned value at the REPL) or passed
+to \code{rhstatus} to monitor the job.
+
+
+\subsection{rhjoin}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+rhjoin \PYG{o}{@textless[]-} \PYG{k+kr}{function}\PYG{p}{(}o\PYG{p}{,}ignore.stderr\PYG{o}{=}\PYG{k+kc}{TRUE}\PYG{p}{)}
+\end{Verbatim}
+
+where \code{o} is returned from \code{rhex} with async=TRUE. The function returns when
+the job is complete and the return value is the same as \code{rhex} when \code{async}
+is FALSE (i.e counters and the result(failure/success) of the job). If
+\code{ignore.stderr} is FALSE, the progress is displayed on the screen(exactly like
+\code{rhex}).
+
+
+\subsection{rhstatus}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+rhstatus \PYG{o}{@textless[]-} \PYG{k+kr}{function}\PYG{p}{(}o\PYG{p}{)}
+\end{Verbatim}
+
+where \code{o} is returned from \code{rhex} with async=TRUE (or a
+Hadoop job id (e.g ``job\_20091031\_0001''). This will return list of counters and
+the progress status of the job(number of maps complete, \% map complete etc).
+
+
+\subsection{print}
+
+This a generic function for printing objects returned from \code{rhex} when
+async=TRUE. The default returns start time, job name and job id, and job state,
+map/reduce progress. For more verbosity, type \code{print(o,verbose=2)} which
+returns a list of counters too (like \code{rhstatus}).
 
 
 \section{Serialization}
