@@ -672,7 +672,7 @@ to split the list into.  The default value of \code{n} is
 \subsection{rhread}
 
 \begin{Verbatim}[commandchars=\\\{\}]
-rhread \PYG{o}{@textless[]-} \PYG{k+kr}{function}\PYG{p}{(}files\PYG{p}{,}max\PYG{o}{=}\PYG{l+m}{-1}\PYG{p}{,}type\PYG{o}{=}\PYG{l+s}{"}\PYG{l+s}{sequence"}\PYG{p}{,}verbose\PYG{o}{=}\PYG{k+kVariable}{T}\PYG{p}{)}
+rhread \PYG{o}{@textless[]-} \PYG{k+kr}{function}\PYG{p}{(}files\PYG{p}{,}max\PYG{o}{=}\PYG{l+m}{-1}\PYG{p}{,}type\PYG{o}{=}\PYG{l+s}{"}\PYG{l+s}{sequence"}\PYG{p}{,}verbose\PYG{o}{=}\PYG{k+kVariable}{T}\PYG{p}{,}mc\PYG{o}{=}\PYG{k+kc}{FALSE}\PYG{p}{)}
 \end{Verbatim}
 
 Reads files(s) from \code{files} (which could be a directory). Wildcards allowed.
@@ -683,6 +683,9 @@ files)
 If \code{max} is positive, \code{max} key-value pairs will be read.
 
 Set \code{type} to ``map'' if the directory \code{files} contains map folders.
+
+Provided you have the \code{multicore} package, set \code{mc} to TRUE and the deserialization will occur in parallel.
+You have to load \code{multicore} beforehand.
 
 
 \subsection{rhmerge}
