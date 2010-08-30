@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009) (format=pdflatex 2009.11.7)  5 AUG 2010 13:44
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009) (format=pdflatex 2009.11.7)  18 AUG 2010 12:25
 entering extended mode
  %&-line parsing enabled.
 **rhipe.tex
@@ -891,12 +891,12 @@ Overfull \hbox (47.00003pt too wide) in paragraph at lines 134--134
 ]
 Chapter 2.
 LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <24.88> not available
-(Font)              Font shape `T1/pcr/b/n' tried instead on input line 174.
+(Font)              Font shape `T1/pcr/b/n' tried instead on input line 171.
 LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <9> not available
-(Font)              Font shape `T1/pcr/b/n' tried instead on input line 199.
+(Font)              Font shape `T1/pcr/b/n' tried instead on input line 196.
 [5]
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <12> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 268.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 265.
  [6]
 Chapter 3.
 [7
@@ -910,22 +910,22 @@ Chapter 4.
 ]
 Chapter 5.
 LaTeX Font Info:    Font shape `T1/pcr/m/it' in size <9> not available
-(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 788.
+(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 785.
 [17] [18]
 Chapter 6.
 LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/pcr/b/n' tried instead on input line 884.
+(Font)              Font shape `T1/pcr/b/n' tried instead on input line 881.
 [19
 
 ] [20]
 Chapter 7.
 
-Underfull \hbox (badness 10000) in paragraph at lines 1053--1059
+Underfull \hbox (badness 10000) in paragraph at lines 1050--1056
 []\T1/ptm/m/n/10 echo -en `E[1;31m' echo ``=========='' $x
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1053--1059
+Underfull \hbox (badness 10000) in paragraph at lines 1050--1056
 \T1/ptm/m/n/10 ``=========='' tput sgr0 scp Rhipe_0.52.tar.gz $x:/tmp/ ssh $x `
 `. ~/.bashrc && rm -rf
  []
@@ -933,7 +933,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 1053--1059
 [21
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 1084--1085
+Underfull \hbox (badness 10000) in paragraph at lines 1081--1082
 []\T1/pcr/m/n/10 java.lang.RuntimeException: RHMRMapRed.waitOutputThreads(): su
 bprocess
  []
@@ -941,18 +941,18 @@ bprocess
 [22]
 Chapter 8.
 
-Underfull \hbox (badness 6364) in paragraph at lines 1093--1099
+Underfull \hbox (badness 6364) in paragraph at lines 1090--1096
 \T1/ptm/m/n/10 The pack-age also in-cludes some mis-cel-la-neous func-tions for
  writ-ing/reading vari-able length en-coded
  []
 
 
-Underfull \hbox (badness 6758) in paragraph at lines 1093--1099
+Underfull \hbox (badness 6758) in paragraph at lines 1090--1096
 \T1/ptm/m/n/10 in-te-gers, and Base64 en-cod-ing/decoding re-lated func-tions. 
 The pack-age can be down-loaded from
  []
 
-LaTeX Font Info:    Try loading font information for TS1+ptm on input line 1117
+LaTeX Font Info:    Try loading font information for TS1+ptm on input line 1114
 .
 (/usr/local/texlive/2009/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
@@ -964,8 +964,8 @@ Chapter 9.
 
 ] (./rhipe.aux) ) 
 Here is how much of TeX's memory you used:
- 8027 strings out of 493848
- 109896 string characters out of 3149207
+ 8026 strings out of 493848
+ 109889 string characters out of 3149207
  196103 words of memory out of 3000000
  11008 multiletter control sequences out of 15000+200000
  60999 words of font info for 73 fonts, out of 3000000 for 9000
@@ -980,9 +980,9 @@ mf-dist/fonts/type1/urw/helvetic/uhvbo8a.pfb></usr/local/texlive/2009/texmf-dis
 t/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2009/texmf-dist/fonts/ty
 pe1/urw/times/utmr8a.pfb></usr/local/texlive/2009/texmf-dist/fonts/type1/urw/ti
 mes/utmri8a.pfb>
-Output written on rhipe.pdf (29 pages, 197878 bytes).
+Output written on rhipe.pdf (29 pages, 197449 bytes).
 PDF statistics:
- 386 PDF objects out of 1000 (max. 8388607)
- 106 named destinations out of 1000 (max. 500000)
+ 385 PDF objects out of 1000 (max. 8388607)
+ 105 named destinations out of 1000 (max. 500000)
  241 words of extra memory for PDF output out of 10000 (max. 10000000)
 
