@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009) (format=pdflatex 2009.11.7)  8 SEP 2010 03:10
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009) (format=pdflatex 2009.11.7)  8 SEP 2010 19:44
 entering extended mode
  %&-line parsing enabled.
 **RHIPE.tex
@@ -847,12 +847,12 @@ LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <17.28> not available
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <10> not available
 (Font)              Font shape `T1/ptm/b/n' tried instead on input line 2.
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <10> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 61.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 62.
 pdfTeX warning (ext4): destination with the same identifier (name{page.i}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.61 ...entsline {chapter}{Index}{63}{section*.30}
+l.62 ...entsline {chapter}{Index}{65}{section*.30}
                                                    [1
 
 ])
@@ -1015,72 +1015,93 @@ File: flightord.pdf Graphic file (type pdf)
 <use flightord.pdf>
 File: flightord.pdf Graphic file (type pdf)
  <use flightord.pdf> [38] [39 <./flightord.pdf>] [40]
-[41] [42
+Underfull \hbox (badness 10000) in paragraph at lines 1722--1724
+[]\T1/ptm/m/n/10 mapred <- list(mapred.reduce.tasks=0) z=rhmr(map=map, N=5000, 
+in-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1738--1741
+[]\T1/ptm/m/n/10 f <- map.values[[r]] rhcol-
+ []
+
+[41]
+Underfull \hbox (badness 10000) in paragraph at lines 1781--1785
+[]
+ []
+
+
+Overfull \hbox (10.36955pt too wide) in paragraph at lines 1781--1785
+\T1/ptm/m/n/10 ofolder=''/tmp/sort2'', part=list(lims=1,type='integer'), or-der
+by=''integer'',cleanup=list(reduce=reduce.post),
+ []
+
+[42] [43] [44
 
 ]
 Chapter 4.
-[43] [44] [45] [46
+[45] [46] [47] [48
 
 ]
 Chapter 5.
-[47] [48]
+[49] [50]
 Chapter 6.
-[49
+[51
 
-] [50] [51] [52]
+] [52] [53] [54]
 Chapter 7.
 LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <10> not available
-(Font)              Font shape `T1/pcr/b/n' tried instead on input line 2274.
+(Font)              Font shape `T1/pcr/b/n' tried instead on input line 2375.
 
-Overfull \hbox (25.00003pt too wide) in paragraph at lines 2296--2296
+Overfull \hbox (25.00003pt too wide) in paragraph at lines 2397--2397
 | [] 
  []
 
-[53
+[55
 
 ]
-Overfull \hbox (25.00003pt too wide) in paragraph at lines 2320--2320
+Overfull \hbox (25.00003pt too wide) in paragraph at lines 2421--2421
 | [] 
  []
 
-[54]
+[56]
 LaTeX Font Info:    Font shape `T1/ptm/bx/it' in size <10> not available
-(Font)              Font shape `T1/ptm/b/it' tried instead on input line 2402.
+(Font)              Font shape `T1/ptm/b/it' tried instead on input line 2503.
 
-Underfull \hbox (badness 10000) in paragraph at lines 2447--2452
+Underfull \hbox (badness 10000) in paragraph at lines 2548--2553
 []\T1/ptm/m/n/10 RHIPE launches the C en-gine on the re-mote com-put-ers us-ing
  the value found in
  []
 
-[55] [56]
+[57] [58]
 Chapter 8.
-[57
+[59
 
-] [58]
+] [60]
 Chapter 9.
-<tableopts.pdf, id=859, 550.055pt x 605.26125pt>
+<tableopts.pdf, id=868, 550.055pt x 605.26125pt>
 File: tableopts.pdf Graphic file (type pdf)
  <use tableopts.pdf>
 File: tableopts.pdf Graphic file (type pdf)
 
-<use tableopts.pdf> [59
+<use tableopts.pdf> [61
 
-] [60 <./tableopts.pdf>] (./RHIPE.ind [61
+] [62 <./tableopts.pdf>] (./RHIPE.ind [63
 
 
-] [62
+] [64
 
-] [63
+] [65
 
 ]
-[64
+[66
 
 ]) (./RHIPE.aux) ) 
 Here is how much of TeX's memory you used:
- 8290 strings out of 493848
- 114953 string characters out of 3149207
- 204756 words of memory out of 3000000
- 11157 multiletter control sequences out of 15000+200000
+ 8294 strings out of 493848
+ 115023 string characters out of 3149207
+ 204824 words of memory out of 3000000
+ 11158 multiletter control sequences out of 15000+200000
  83299 words of font info for 94 fonts, out of 3000000 for 9000
  715 hyphenation exceptions out of 8191
  45i,12n,48p,603b,492s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -1100,9 +1121,9 @@ pe1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2009/texmf-dist/fonts/type1/urw
 /times/utmb8a.pfb></usr/local/texlive/2009/texmf-dist/fonts/type1/urw/times/utm
 bi8a.pfb></usr/local/texlive/2009/texmf-dist/fonts/type1/urw/times/utmr8a.pfb><
 /usr/local/texlive/2009/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on RHIPE.pdf (68 pages, 1203517 bytes).
+Output written on RHIPE.pdf (70 pages, 1210713 bytes).
 PDF statistics:
- 1131 PDF objects out of 1200 (max. 8388607)
- 186 named destinations out of 1000 (max. 500000)
+ 1141 PDF objects out of 1200 (max. 8388607)
+ 189 named destinations out of 1000 (max. 500000)
  352 words of extra memory for PDF output out of 10000 (max. 10000000)
 
